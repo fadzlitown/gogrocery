@@ -6,7 +6,9 @@ class Utils{
   BuildContext context;
   Utils(this.context);
 
-  bool get getTheme => Provider.of<DarkThemeProvider>(context).getDarkTheme;
+  bool get isDarkTheme => Provider.of<DarkThemeProvider>(context).getDarkTheme;
 
-  Color get color => getTheme ? Colors.white : Colors.black;
+  Color get color => isDarkTheme ? Colors.white : Colors.black;
+
+  Size get getMediaSize => MediaQuery.of(context).size;
 }
