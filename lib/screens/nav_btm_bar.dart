@@ -18,7 +18,7 @@ class _NavBottomBarScreenState extends State<NavBottomBarScreen> {
     {'page':const HomeScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.home), label: "Home") },
     {'page':const CategoriesScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.category), label: "Category") },
     {'page':const CartScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.buy), label: "Cart") },
-    {'page':const UserScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.user2), label: "User") }
+    {'page': UserScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.user2), label: "User") }
   ];
 
   int _selectedIndex = 0;
