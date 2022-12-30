@@ -16,7 +16,7 @@ class NavBottomBarScreen extends StatefulWidget {
 class _NavBottomBarScreenState extends State<NavBottomBarScreen> {
   final List<Map<String, dynamic>> _pagesConfig = [
     {'page':const HomeScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.home), label: "Home") },
-    {'page':const CategoriesScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.category), label: "Category") },
+    {'page': CategoriesScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.category), label: "Category") },
     {'page':const CartScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.buy), label: "Cart") },
     {'page': UserScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.user2), label: "User") }
   ];
