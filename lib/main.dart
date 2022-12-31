@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
+import 'package:go_grocery/screens/feed_screen.dart';
 import 'package:go_grocery/screens/home_screen.dart';
 import 'package:go_grocery/screens/nav_btm_bar.dart';
 import 'package:go_grocery/screens/onsale_screen.dart';
@@ -53,6 +54,7 @@ class _MyAppState extends State<MyApp> {
             home:  NavBottomBarScreen(),
             routes: {
               OnSaleScreen.routeName: (context) => const OnSaleScreen(),
+              FeedScreen.routeName : (context) => const FeedScreen()
             },
           );
         },

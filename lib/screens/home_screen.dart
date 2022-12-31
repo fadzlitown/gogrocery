@@ -2,6 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
+import 'package:go_grocery/screens/feed_screen.dart';
 import 'package:go_grocery/screens/onsale_screen.dart';
 import 'package:go_grocery/services/Utils.dart';
 import 'package:provider/provider.dart';
@@ -105,12 +106,15 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 //todo can use this for spacing or //Spacer() between the widgets
-                children: const [
-                  Text('Our Product',
+                children:  [
+                  const Text('Our Product',
                       style: TextStyle(color: Colors.black, fontSize: 25)),
                   //Spacer(), or use the mainAxis spaceBetween
-                  Text('Browse all',
-                      style: TextStyle(color: Colors.blue, fontSize: 18)),
+                  TextButton(onPressed: (){
+                    GlobalMethods.navigateTo(context: context, name: FeedScreen.routeName);
+                  }, child:
+                  const Text('Browse all',
+                      style: TextStyle(color: Colors.blue, fontSize: 18))),
                 ],
               ),
             ),
