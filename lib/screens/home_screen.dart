@@ -2,9 +2,11 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
+import 'package:go_grocery/screens/onsale_screen.dart';
 import 'package:go_grocery/services/Utils.dart';
 import 'package:provider/provider.dart';
 
+import '../services/global_methods.dart';
 import '../widgets/feed_item_widget.dart';
 import '../widgets/on_sale_widget.dart';
 
@@ -47,7 +49,9 @@ class HomeScreen extends StatelessWidget {
               height: 6,
             ),
             TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  GlobalMethods.navigateTo(context: context, name: OnSaleScreen.routeName);
+                },
                 child: const Text(
                   'View All',
                   style: TextStyle(color: Colors.blue, fontSize: 20),
@@ -111,6 +115,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             GridView.count(
+              //todo If Children has a combination of list like this home screen
               ///todo w/out physics & shrinkWrap --> getting this error RenderBox was not laid out: RenderRepaintBoundary#a664d relayoutBoundary=up15 NEEDS-PAINT. Thus,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,

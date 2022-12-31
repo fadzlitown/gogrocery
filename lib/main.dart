@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
 import 'package:go_grocery/screens/home_screen.dart';
 import 'package:go_grocery/screens/nav_btm_bar.dart';
+import 'package:go_grocery/screens/onsale_screen.dart';
 import 'package:go_grocery/services/dark_theme_prefs.dart';
 import 'package:provider/provider.dart';
 
@@ -50,6 +51,9 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             theme: Styles.themeData(provider.getDarkTheme, context),
             home:  NavBottomBarScreen(),
+            routes: {
+              OnSaleScreen.routeName: (context) => const OnSaleScreen(),
+            },
           );
         },
       ),
