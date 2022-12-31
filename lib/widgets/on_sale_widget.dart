@@ -4,6 +4,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/widgets/price_widget.dart';
 
 import '../services/Utils.dart';
+import 'feed_item_widget.dart';
 
 class OnSalesWidget extends StatefulWidget {
   const OnSalesWidget({Key? key}) : super(key: key);
@@ -63,7 +64,7 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
                       ],),
                   ],
                 ),
-                const PriceWidget(),
+                PriceWidget(price: 5.9, salePrice: 2.99, textPrice: '1', isOnSale: true),
                 const SizedBox(height: 5,),
                 Text('Product title', style: TextStyle(color: color, fontSize: 16),),
                 const SizedBox(height: 5,),
