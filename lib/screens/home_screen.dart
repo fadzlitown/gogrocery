@@ -7,21 +7,13 @@ import 'package:go_grocery/screens/onsale_screen.dart';
 import 'package:go_grocery/services/Utils.dart';
 import 'package:provider/provider.dart';
 
+import '../consts/constants.dart';
 import '../services/global_methods.dart';
 import '../widgets/feed_item_widget.dart';
 import '../widgets/on_sale_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
-
-  final List<String> _landingImage = [
-    "assets/images/landing/buy-on-laptop.jpg",
-    "assets/images/landing/grocery-cart.jpg",
-    "assets/images/landing/store.jpg",
-    "assets/images/landing/buyfood.jpg",
-    "assets/images/landing/buy-through.png",
-    "assets/images/landing/vergtablebg.jpg",
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +27,9 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
                 height: util.getMediaSize.height * 0.33,
                 child: Swiper(
-                  itemCount: _landingImage.length,
+                  itemCount: Constants.landingImages.length,
                   itemBuilder: (context, index) {
-                    return Image.asset(_landingImage[index], fit: BoxFit.fill);
+                    return Image.asset(Constants.landingImages[index], fit: BoxFit.fill);
                   },
                   pagination: SwiperPagination(
                       alignment: Alignment.bottomCenter,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
+import 'package:go_grocery/screens/auth/login_screen.dart';
 import 'package:go_grocery/screens/feed/feed_detail_screen.dart';
 import 'package:go_grocery/screens/feed_screen.dart';
 import 'package:go_grocery/screens/home_screen.dart';
@@ -55,7 +56,7 @@ class _MyAppState extends State<MyApp> {
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             theme: Styles.themeData(provider.getDarkTheme, context),
-            home:  NavBottomBarScreen(),
+            home:  const LoginScreen(),
             routes: {
               OnSaleScreen.routeName: (context) => const OnSaleScreen(),
               FeedScreen.routeName : (context) => const FeedScreen(),

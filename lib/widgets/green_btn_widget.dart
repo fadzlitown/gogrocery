@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class GreenButtonWidget extends StatelessWidget {
   final String name;
-
   final bool isBold;
   Function function;
 
