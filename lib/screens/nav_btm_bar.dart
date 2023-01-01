@@ -44,11 +44,14 @@ class _NavBottomBarScreenState extends State<NavBottomBarScreen> {
 
     //todo learn - converting dynamic _pagesConfig into new list!
     List<BottomNavigationBarItem> listBtmNav = _pagesConfig.fold<List<BottomNavigationBarItem>>([], (previousValue, element) => List.from(previousValue)..add(element['navBtn']));
+    bool selectedCartScreen = listBtmNav[_selectedIndex].label.toString()=="Cart";
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: (! selectedCartScreen) ? AppBar(
           title: Text(listBtmNav[_selectedIndex].label.toString(),
-              style: TextStyle(color: !_isDark ? Colors.black87 : Colors.white)), backgroundColor: _isDark ? Theme.of(context).cardColor : Colors.white),
+              style: TextStyle(color: !_isDark ? Colors.black87 : Colors.white)),
+          backgroundColor: _isDark ? Theme.of(context).cardColor : Colors.white)
+      : null,
       backgroundColor: _isDark ? Theme.of(context).cardColor : Colors.white,
       body: _pagesConfig[_selectedIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(
