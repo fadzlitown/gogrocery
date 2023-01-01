@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/screens/cart.dart';
@@ -15,10 +16,34 @@ class NavBottomBarScreen extends StatefulWidget {
 
 class _NavBottomBarScreenState extends State<NavBottomBarScreen> {
   final List<Map<String, dynamic>> _pagesConfig = [
-    {'page': HomeScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.home), label: "Home") },
-    {'page': CategoriesScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.category), label: "Category") },
-    {'page':const CartScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.buy), label: "Cart") },
-    {'page': UserScreen(), 'navBtn': const BottomNavigationBarItem(icon: Icon(IconlyLight.user2), label: "User") }
+    {
+      'page': HomeScreen(),
+      'navBtn': const BottomNavigationBarItem(
+          icon: Icon(IconlyLight.home), label: "Home")
+    },
+    {
+      'page': CategoriesScreen(),
+      'navBtn': const BottomNavigationBarItem(
+          icon: Icon(IconlyLight.category), label: "Category")
+    },
+    {
+      'page': const CartScreen(),
+      'navBtn': BottomNavigationBarItem(
+          label: "Cart",
+          icon: Badge(
+              toAnimate: true,
+              shape: BadgeShape.circle,
+              badgeColor: Colors.blue,
+              borderRadius: BorderRadius.circular(8),
+              badgeContent: const Text('1', style: TextStyle(color: Colors.white)),
+              position: BadgePosition.topEnd(top: -5, end: -5), //todo optional --> the pos can be changed
+              child: const Icon(IconlyLight.buy)))
+    },
+    {
+      'page': UserScreen(),
+      'navBtn': const BottomNavigationBarItem(
+          icon: Icon(IconlyLight.user2), label: "User")
+    }
   ];
 
   int _selectedIndex = 0;
@@ -43,23 +68,34 @@ class _NavBottomBarScreenState extends State<NavBottomBarScreen> {
     bool _isDark = themeState.getDarkTheme;
 
     //todo learn - converting dynamic _pagesConfig into new list!
-    List<BottomNavigationBarItem> listBtmNav = _pagesConfig.fold<List<BottomNavigationBarItem>>([], (previousValue, element) => List.from(previousValue)..add(element['navBtn']));
-    bool selectedCartScreen = listBtmNav[_selectedIndex].label.toString()=="Cart";
+    List<BottomNavigationBarItem> listBtmNav = _pagesConfig
+        .fold<List<BottomNavigationBarItem>>(
+            [],
+            (previousValue, element) =>
+                List.from(previousValue)..add(element['navBtn']));
+    bool selectedCartScreen =
+        listBtmNav[_selectedIndex].label.toString() == "Cart";
 
     return Scaffold(
-      appBar: (! selectedCartScreen) ? AppBar(
-          title: Text(listBtmNav[_selectedIndex].label.toString(),
-              style: TextStyle(color: !_isDark ? Colors.black87 : Colors.white)),
-          backgroundColor: _isDark ? Theme.of(context).cardColor : Colors.white)
-      : null,
+      appBar: (!selectedCartScreen)
+          ? AppBar(
+              title: Text(listBtmNav[_selectedIndex].label.toString(),
+                  style: TextStyle(
+                      color: !_isDark ? Colors.black87 : Colors.white)),
+              backgroundColor:
+                  _isDark ? Theme.of(context).cardColor : Colors.white)
+          : null,
       backgroundColor: _isDark ? Theme.of(context).cardColor : Colors.white,
       body: _pagesConfig[_selectedIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // todo learn -> by default the bottonNav is shifting animation. now is just fixed plain
+        type: BottomNavigationBarType.fixed,
+        // todo learn -> by default the bottonNav is shifting animation. now is just fixed plain
         unselectedItemColor: _isDark ? Colors.white12 : Colors.black26,
         selectedItemColor: _isDark ? Colors.lightBlue.shade300 : Colors.black87,
-        showSelectedLabels: false, //todo leanr - don't want to show label name
-        showUnselectedLabels: false, //todo leanr - don't want to show label name
+        showSelectedLabels: false,
+        //todo leanr - don't want to show label name
+        showUnselectedLabels: false,
+        //todo leanr - don't want to show label name
         currentIndex: _selectedIndex,
         onTap: _selectedPage,
         items: listBtmNav,
