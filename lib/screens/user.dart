@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
+import 'package:go_grocery/screens/orders/orders_screen.dart';
 import 'package:go_grocery/screens/wishlist/wishlist_screen.dart';
 import 'package:go_grocery/services/global_methods.dart';
 import 'package:provider/provider.dart';
@@ -160,6 +161,10 @@ class _UserScreenState extends State<UserScreen> {
           if(context!=null) GlobalMethods.navigateTo(context: context, name: WishlistScreen.routeName);
           break;
         }
+      case "Orders":{
+        if(context!=null) GlobalMethods.navigateTo(context: context, name: OrdersScreen.routeName);
+        break;
+      }
       case "Theme":
         {
           //todo func
