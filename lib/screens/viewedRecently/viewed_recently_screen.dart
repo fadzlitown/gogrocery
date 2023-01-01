@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/screens/cart/empty_cart.dart';
+import 'package:go_grocery/screens/viewedRecently/viewed_recently_widget.dart';
 import 'package:go_grocery/widgets/back_widget.dart';
 
 import '../../services/Utils.dart';
 import '../../services/global_methods.dart';
-import 'order_widget.dart';
+import '../orders/order_widget.dart';
 
-class OrdersScreen extends StatelessWidget {
-  const OrdersScreen({Key? key}) : super(key: key);
+class ViewedRecentlyScreen extends StatelessWidget {
+  const ViewedRecentlyScreen({Key? key}) : super(key: key);
 
-  static const routeName = "/OrdersScreen";
-
+  static const routeName = "/ViewedRecentlyScreen";
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +20,19 @@ class OrdersScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          leading: const BackWidget(),
+            leading: const BackWidget(),
             actions: [
               Visibility(
                 visible: !isEmpty,
                 child: IconButton(
                     onPressed: () {
-                      GlobalMethods.showOkCancelDialog(context, 'Empty Orders',
-                          'Are you sure? ', IconlyLight.delete,
-                          positiveCallback: () {}, negativeCallback: () {});
+                      GlobalMethods.showOkCancelDialog(
+                          context,
+                          'Empty Viewed Items',
+                          'Are you sure? ',
+                          IconlyLight.delete,
+                          positiveCallback: () {},
+                          negativeCallback: () {});
                     },
                     icon: Icon(IconlyBroken.delete, color: util.color)),
               )
@@ -37,18 +41,15 @@ class OrdersScreen extends StatelessWidget {
             backgroundColor:
                 util.isDarkTheme ? Theme.of(context).cardColor : Colors.white,
             title: Text(
-              'Your order(s)',
+              'Viewed item(s)',
               style: TextStyle(
                   color: !util.isDarkTheme ? Colors.black87 : Colors.white),
             )),
-        body: (isEmpty) ? EmptyScreen('Your order is empty', 'assets/images/add-to-cart.png', true, 'Shop Now!') : ListView.separated(
+        body: isEmpty ? EmptyScreen('Your history is empty', 'assets/images/history.png', true, 'Browse Now!') : ListView.builder(
           itemBuilder: (context, index) {
-            return const OrderWidget();
+            return const ViewedRecentlyWidget();
           },
           itemCount: 10,
-          separatorBuilder: (BuildContext context, int index) {
-            return Divider(color: util.color, thickness: 0.5);
-          },
         ));
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/screens/cart/cart_widget.dart';
+import 'package:go_grocery/screens/cart/empty_cart.dart';
 import 'package:go_grocery/widgets/green_btn_widget.dart';
 
 import '../services/Utils.dart';
@@ -12,17 +13,21 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
+    bool isEmpty = false;
 
     return Scaffold(
         appBar: AppBar(
             actions: [
-              IconButton(
-                  onPressed: () {
-                    GlobalMethods.showOkCancelDialog(context, 'Empty Cart',
-                        'Are you sure? ', IconlyLight.delete,
-                        positiveCallback: () {}, negativeCallback: () {});
-                  },
-                  icon: Icon(IconlyBroken.delete, color: util.color))
+              Visibility(
+                visible: !isEmpty,
+                child: IconButton(
+                    onPressed: () {
+                      GlobalMethods.showOkCancelDialog(context, 'Empty Cart',
+                          'Are you sure? ', IconlyLight.delete,
+                          positiveCallback: () {}, negativeCallback: () {});
+                    },
+                    icon: Icon(IconlyBroken.delete, color: util.color)),
+              )
             ],
             elevation: 5,
             backgroundColor:
@@ -32,7 +37,7 @@ class CartScreen extends StatelessWidget {
               style: TextStyle(
                   color: !util.isDarkTheme ? Colors.black87 : Colors.white),
             )),
-        body: Column(
+        body: (isEmpty) ? EmptyScreen('Your cart is empty', 'assets/images/cart.png', true, 'Shop Now!') : Column(
           children: [
             _orderNowWidget(context),
             Expanded(

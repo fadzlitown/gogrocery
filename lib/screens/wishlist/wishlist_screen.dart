@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_grocery/screens/cart/empty_cart.dart';
 import 'package:go_grocery/screens/wishlist/wishlist_widget.dart';
 
 import '../../services/Utils.dart';
@@ -14,9 +15,12 @@ class WishlistScreen extends StatelessWidget {
 
   static const routeName = "/WishlistScreen";
 
+
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
+    bool isEmpty = true;
+
 
     return Scaffold(
         appBar: AppBar(
@@ -28,20 +32,23 @@ class WishlistScreen extends StatelessWidget {
             backgroundColor:
                 util.isDarkTheme ? Theme.of(context).cardColor : Colors.white,
             actions: [
-              IconButton(
-                  onPressed: () {
-                    GlobalMethods.showOkCancelDialog(context, 'Empty Wishlist',
-                        'Are you sure? ', IconlyLight.delete,
-                        positiveCallback: () {}, negativeCallback: () {});
-                  },
-                  icon: Icon(IconlyBroken.delete, color: util.color))
+              Visibility(
+                visible: !isEmpty,
+                child: IconButton(
+                    onPressed: () {
+                      GlobalMethods.showOkCancelDialog(context, 'Empty Wishlist',
+                          'Are you sure? ', IconlyLight.delete,
+                          positiveCallback: () {}, negativeCallback: () {});
+                    },
+                    icon: Icon(IconlyBroken.delete, color: util.color)),
+              )
             ],
             title: Text(
               'Wishlist',
               style: TextStyle(
                   color: !util.isDarkTheme ? Colors.black87 : Colors.white),
             )),
-        body: MasonryGridView.count(
+        body: (isEmpty) ? EmptyScreen('Your wishlist is empty', 'assets/images/wishlist.png', true, 'Add a wish now!') : MasonryGridView.count(
             crossAxisCount: 2,
             mainAxisSpacing: 2,
             crossAxisSpacing: 2,

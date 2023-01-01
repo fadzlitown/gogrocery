@@ -1,17 +1,22 @@
-
-
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 
 import '../../services/Utils.dart';
 import '../../services/global_methods.dart';
 import '../../widgets/price_widget.dart';
+import '../../widgets/quantity_increment_decrement.dart';
 import '../feed/feed_detail_screen.dart';
 
-class OrderWidget extends StatelessWidget {
-  const OrderWidget({Key? key}) : super(key: key);
+class ViewedRecentlyWidget extends StatefulWidget {
+  const ViewedRecentlyWidget({Key? key}) : super(key: key);
 
+  @override
+  State<ViewedRecentlyWidget> createState() => _ViewedRecentlyWidgetState();
+}
+
+class _ViewedRecentlyWidgetState extends State<ViewedRecentlyWidget> {
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
@@ -59,11 +64,11 @@ class OrderWidget extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  Text('03/07/2022',
-                      style: TextStyle(
-                          color: util.color,
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal))
+                  QuantityIncrementDecrement(
+                      util: util,
+                      icon: CupertinoIcons.plus,
+                      color: Colors.green,
+                      func: () {})
                 ],
               )
             ],

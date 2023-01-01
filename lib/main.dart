@@ -6,6 +6,7 @@ import 'package:go_grocery/screens/home_screen.dart';
 import 'package:go_grocery/screens/nav_btm_bar.dart';
 import 'package:go_grocery/screens/onsale_screen.dart';
 import 'package:go_grocery/screens/orders/orders_screen.dart';
+import 'package:go_grocery/screens/viewedRecently/viewed_recently_screen.dart';
 import 'package:go_grocery/screens/wishlist/wishlist_screen.dart';
 import 'package:go_grocery/services/dark_theme_prefs.dart';
 import 'package:provider/provider.dart';
@@ -61,6 +62,7 @@ class _MyAppState extends State<MyApp> {
               FeedDetailScreen.routeName : (context) =>  FeedDetailScreen(quantity: 1,),
               WishlistScreen.routeName : (context) =>  const WishlistScreen(),
               OrdersScreen.routeName : (context) =>  const OrdersScreen(),
+              ViewedRecentlyScreen.routeName : (context) =>  const ViewedRecentlyScreen(),
             },
           );
         },

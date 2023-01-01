@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_grocery/screens/cart/empty_cart.dart';
 import 'package:go_grocery/widgets/on_sale_widget.dart';
 
 import '../services/Utils.dart';
@@ -29,15 +30,7 @@ class OnSaleScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                    Image.asset('assets/images/box.png',
-                        height: util.getMediaSize.height * 0.20),
-                    Text(
-                      'No product on sale yet!',
-                      style: TextStyle(
-                      color: util.color,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold),
-                    )
+                    EmptyScreen('No product on sale yet!', 'assets/images/box.png', false, '')
                   ]),
                 ),
               )
