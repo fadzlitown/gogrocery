@@ -2,6 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
+import 'package:go_grocery/screens/wishlist/wishlist_screen.dart';
+import 'package:go_grocery/services/global_methods.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/ListTileWidget.dart';
@@ -154,10 +156,8 @@ class _UserScreenState extends State<UserScreen> {
 
           break;
         }
-      case "User":
-        {
-          //todo func
-          print('User');
+      case "Wishlist":{
+          if(context!=null) GlobalMethods.navigateTo(context: context, name: WishlistScreen.routeName);
           break;
         }
       case "Theme":

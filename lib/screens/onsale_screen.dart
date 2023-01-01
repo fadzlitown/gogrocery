@@ -3,6 +3,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/widgets/on_sale_widget.dart';
 
 import '../services/Utils.dart';
+import '../widgets/back_widget.dart';
 
 class OnSaleScreen extends StatelessWidget {
   const OnSaleScreen({Key? key}) : super(key: key);
@@ -15,10 +16,7 @@ class OnSaleScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: util.color),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            leading: const BackWidget(),
             title: Text('On Sale',
                 style: TextStyle(
                     color: !util.isDarkTheme ? Colors.black87 : Colors.white)),

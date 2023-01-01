@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/Utils.dart';
+import '../widgets/back_widget.dart';
 import '../widgets/feed_item_widget.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -31,10 +32,7 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: util.color),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+            leading: const BackWidget(),
             title: Text('All Products',
                 style: TextStyle(
                     color: !util.isDarkTheme ? Colors.black87 : Colors.white)),

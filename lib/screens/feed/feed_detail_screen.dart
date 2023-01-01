@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 
 import '../../services/Utils.dart';
+import '../../widgets/back_widget.dart';
 import '../../widgets/green_btn_widget.dart';
 import '../../widgets/price_widget.dart';
 import '../../widgets/quantity_increment_decrement.dart';
@@ -47,10 +48,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
         elevation: 5,
         backgroundColor:
         util.isDarkTheme ? Theme.of(context).cardColor : Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        leading: const BackWidget(),
         title: Text(
           'Detail',
           style: TextStyle(
