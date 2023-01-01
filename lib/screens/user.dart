@@ -170,7 +170,7 @@ class _UserScreenState extends State<UserScreen> {
         {
           //todo func
           if (context != null) {
-            await _showLogoutDialog(name);
+            await GlobalMethods.showOkCancelDialog(context, 'Sign out', 'Do you wanna sign out?', IconlyLight.logout ,positiveCallback: (){}, negativeCallback:(){});
           }
           break;
         }
@@ -200,22 +200,22 @@ class _UserScreenState extends State<UserScreen> {
   }
 
 
-  Future<void> _showLogoutDialog(String name) async {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Row(children:[const Icon(IconlyLight.logout), Text('  $name')] ),
-            content: const Text('Do you wanna sign out?'),
-            actions: [
-              TextButton(onPressed: (){
-                if(Navigator.canPop(context)) Navigator.pop(context);
-              }, child: const Text('Cancel')),
-              TextButton(onPressed: (){
-              }, child: const Text('OK'))
-            ],);
-        });
-  }
+  // Future<void> _showLogoutDialog(String name) async {
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Row(children:[const Icon(IconlyLight.logout), Text('  $name')] ),
+  //           content: const Text('Do you wanna sign out?'),
+  //           actions: [
+  //             TextButton(onPressed: (){
+  //               if(Navigator.canPop(context)) Navigator.pop(context);
+  //             }, child: const Text('Cancel')),
+  //             TextButton(onPressed: (){
+  //             }, child: const Text('OK'))
+  //           ],);
+  //       });
+  // }
 
   @override
   void dispose() {

@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_grocery/screens/wishlist/wishlist_widget.dart';
 
 import '../../services/Utils.dart';
+import '../../services/global_methods.dart';
 import '../../widgets/back_widget.dart';
 import '../../widgets/green_btn_widget.dart';
 import '../cart/cart_widget.dart';
@@ -28,7 +29,11 @@ class WishlistScreen extends StatelessWidget {
                 util.isDarkTheme ? Theme.of(context).cardColor : Colors.white,
             actions: [
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    GlobalMethods.showOkCancelDialog(context, 'Empty Wishlist',
+                        'Are you sure? ', IconlyLight.delete,
+                        positiveCallback: () {}, negativeCallback: () {});
+                  },
                   icon: Icon(IconlyBroken.delete, color: util.color))
             ],
             title: Text(

@@ -4,6 +4,7 @@ import 'package:go_grocery/screens/cart/cart_widget.dart';
 import 'package:go_grocery/widgets/green_btn_widget.dart';
 
 import '../services/Utils.dart';
+import '../services/global_methods.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -16,7 +17,11 @@ class CartScreen extends StatelessWidget {
         appBar: AppBar(
             actions: [
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    GlobalMethods.showOkCancelDialog(context, 'Empty Cart',
+                        'Are you sure? ', IconlyLight.delete,
+                        positiveCallback: () {}, negativeCallback: () {});
+                  },
                   icon: Icon(IconlyBroken.delete, color: util.color))
             ],
             elevation: 5,
@@ -51,16 +56,19 @@ class CartScreen extends StatelessWidget {
         alignment: Alignment.centerLeft,
         width: double.infinity,
         height: util.getMediaSize.height * 0.1,
-        padding: const EdgeInsets.symmetric(horizontal: 15),  //todo symmetric - horizontal padding between start & end / left & right
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        //todo symmetric - horizontal padding between start & end / left & right
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GreenButtonWidget('Order Now', true, (){}),
+            GreenButtonWidget('Order Now', true, () {}),
             // Spacer(), todo l: remove this spacer then directly used --> MainAxisAlignment.spaceBetween
-            Text('Total: \$0.522', style: TextStyle(color: util.color, fontSize: 18, fontWeight: FontWeight.bold))
+            Text('Total: \$0.522',
+                style: TextStyle(
+                    color: util.color,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold))
           ],
         ));
   }
 }
-
-
