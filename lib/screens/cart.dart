@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/screens/cart/cart_widget.dart';
+import 'package:go_grocery/widgets/green_btn_widget.dart';
 
 import '../services/Utils.dart';
 
@@ -54,19 +55,7 @@ class CartScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Material(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(10),
-                child: InkWell(
-                  onTap: () {},
-                  child: const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Order Now',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ),
-                )),
+            GreenButtonWidget('Order Now', true, (){}),
             // Spacer(), todo l: remove this spacer then directly used --> MainAxisAlignment.spaceBetween
             Text('Total: \$0.522', style: TextStyle(color: util.color, fontSize: 18, fontWeight: FontWeight.bold))
           ],

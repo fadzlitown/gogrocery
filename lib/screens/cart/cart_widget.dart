@@ -3,8 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_grocery/services/global_methods.dart';
 
 import '../../services/Utils.dart';
+import '../../widgets/quantity_increment_decrement.dart';
+import '../feed/feed_detail_screen.dart';
 
 class CartWidget extends StatefulWidget {
   int quantity = 1;
@@ -38,7 +41,9 @@ class _CartWidgetState extends State<CartWidget> {
 
     return GestureDetector(
       //a widget that detects gestures, eg. any taps / pressed / drag
-      onTap: () {},
+      onTap: () {
+        GlobalMethods.navigateTo(context: context, name: FeedDetailScreen.routeName);
+      },
       child: Container(
         margin: const EdgeInsets.all(7),
         decoration: BoxDecoration(
@@ -73,16 +78,26 @@ class _CartWidgetState extends State<CartWidget> {
                   width: util.getMediaSize.width * 0.45,
                   child: Row(
                     children: [
-                      _incrementQuantity(
+                      QuantityIncrementDecrement(
                           util: util,
                           icon: CupertinoIcons.minus,
                           color: Colors.red,
-                          func: () {}),
+                          func: () {
+                            if(_quantityController.text=='1'){
+                              return;
+                            } else {
+                              setState(() {
+                                _quantityController.text=(int.parse(_quantityController.text)-1).toString();
+                              });
+                            }
+
+                          }),
                       Flexible(
                         flex: 1,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 7,right: 7),
                           child: TextField(
+                              textAlign: TextAlign.center,
                               controller: _quantityController,
                               keyboardType: TextInputType.number,
                               maxLines: 1,
@@ -102,11 +117,22 @@ class _CartWidgetState extends State<CartWidget> {
                                       borderSide: BorderSide()))),
                         ),
                       ),
-                      _incrementQuantity(
+                      QuantityIncrementDecrement(
                           util: util,
                           icon: CupertinoIcons.plus,
                           color: Colors.green,
-                          func: () {}),
+                          func: () {
+                            if(_quantityController.text=='1'){
+                              setState(() {
+                                _quantityController.text=(int.parse(_quantityController.text)+1).toString();
+                              });
+                              return;
+                            } else {
+                              setState(() {
+                                _quantityController.text=(int.parse(_quantityController.text)+1).toString();
+                              });
+                            }
+                          }),
                     ],
                   ),
                 ),
@@ -128,27 +154,4 @@ class _CartWidgetState extends State<CartWidget> {
       ),
     );
   }
-}
-
-Widget _incrementQuantity(
-    {required Utils util,
-    required IconData icon,
-    required Color color,
-    required Function func}) {
-  return SizedBox(
-    width: util.getMediaSize.width * 0.08,
-    child: Material(
-      color: color,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: () {
-          func(); // will trigger this func
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-            padding: const EdgeInsets.all(6),
-            child: Icon(icon, color: Colors.white, size: 20,)),
-      ),
-    ),
-  );
 }
