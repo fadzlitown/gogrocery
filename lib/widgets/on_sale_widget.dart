@@ -2,9 +2,10 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/widgets/price_widget.dart';
+import 'package:provider/provider.dart';
 
+import '../model/products_model.dart';
 import '../services/Utils.dart';
-import 'feed_item_widget.dart';
 
 class OnSalesWidget extends StatefulWidget {
   const OnSalesWidget({Key? key}) : super(key: key);
@@ -14,10 +15,14 @@ class OnSalesWidget extends StatefulWidget {
 }
 
 class _OnSalesWidgetState extends State<OnSalesWidget> {
+
+
   @override
   Widget build(BuildContext context) {
+    //Registered Provider Model
+    ProductModel model = Provider.of<ProductModel>(context);
+
     Size size = Utils(context).getMediaSize;
-    final isDarkTheme = Utils(context).isDarkTheme;
     final color = Utils(context).color;
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -40,13 +45,13 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        FancyShimmerImage(imageUrl: 'https://via.placeholder.com/80x80',height: size.width*0.20, width: size.width*0.20, boxFit: BoxFit.fill),
+                        FancyShimmerImage(imageUrl: model.imageUrl ,height: size.width*0.20, width: size.width*0.20, boxFit: BoxFit.fill),
                         // Image.network("https://via.placeholder.com/80x80",
                         //     height: size.height*0.12, fit: BoxFit.fill),
-                        SizedBox(height: 10, width: 10,),
+                        const SizedBox(height: 10, width: 10,),
                         Column(children: [
-                          Text('2KG', style: TextStyle(color: color, fontSize: 22)),
-                          SizedBox(height: 6),
+                          Text(model.isPiece ? '1 piece' : '1 kg', style: TextStyle(color: color, fontSize: 18)),
+                          const SizedBox(height: 6),
                           Row(children: [
                             GestureDetector(
                               child: Icon(IconlyLight.bag, size: 22, color: color),
@@ -64,9 +69,9 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
                       ],),
                   ],
                 ),
-                PriceWidget(price: 5.9, salePrice: 2.99, textPrice: '1', isOnSale: true),
+                PriceWidget(price: model.price, salePrice: model.salePrice, textPrice: '1', isOnSale: model.isOnSale),
                 const SizedBox(height: 5,),
-                Text('Product title', style: TextStyle(color: color, fontSize: 16),),
+                Text(model.title, style: TextStyle(color: color, fontSize: 16),),
                 const SizedBox(height: 5,),
               ]
             ),

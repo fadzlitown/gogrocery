@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_grocery/model/products_model.dart';
+import 'package:go_grocery/provider/products_provider.dart';
 import 'package:go_grocery/screens/cart/empty_cart.dart';
 import 'package:go_grocery/widgets/on_sale_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../services/Utils.dart';
 import '../widgets/back_widget.dart';
@@ -12,7 +15,9 @@ class OnSaleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
-    bool _isListEmpty = true;
+    final provider = Provider.of<ProductProvider>(context);
+    List<ProductModel> listByOnSale = provider.getProductByOnSale;
+    bool isListEmpty = listByOnSale.isEmpty;
 
     return Scaffold(
         appBar: AppBar(
@@ -22,7 +27,7 @@ class OnSaleScreen extends StatelessWidget {
                     color: !util.isDarkTheme ? Colors.black87 : Colors.white)),
             backgroundColor:
                 util.isDarkTheme ? Theme.of(context).cardColor : Colors.white),
-        body: _isListEmpty
+        body: isListEmpty
             ? Padding(
                 padding: const EdgeInsets.all(10),
                 child: Center(
@@ -35,7 +40,6 @@ class OnSaleScreen extends StatelessWidget {
                 ),
               )
             : GridView.count(
-
                 ///todo If this widget handling single list, then remove physics & shrinkWrap
                 crossAxisCount: 2,
                 padding: const EdgeInsets.all(5),
@@ -44,8 +48,9 @@ class OnSaleScreen extends StatelessWidget {
                 childAspectRatio:
                     util.getMediaSize.width / (util.getMediaSize.height * 0.45),
                 //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
-                children: List.generate(10, (index) {
-                  return const OnSalesWidget();
+                children: List.generate(listByOnSale.length, (index) {
+                  return ChangeNotifierProvider.value(
+                      value: listByOnSale[index], child: const OnSalesWidget());
                 })));
   }
 }

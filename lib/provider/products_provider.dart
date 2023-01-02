@@ -5,6 +5,10 @@ import '../model/products_model.dart';
 class ProductProvider with ChangeNotifier{
 
   List<ProductModel> get getProducts => _productsList;
+  
+  List<ProductModel> get getProductByOnSale {
+    return _productsList.where((element) => element.isOnSale).toList();
+  }
 
   final List<ProductModel> _productsList = [
     ProductModel(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_grocery/consts/constants.dart';
 import 'package:go_grocery/model/products_model.dart';
 import 'package:go_grocery/provider/products_provider.dart';
 import 'package:provider/provider.dart';
@@ -30,11 +29,11 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
-    bool _isListEmpty = false;
-
     //Registered Provider list
     final productProviders = Provider.of<ProductProvider>(context);
     List<ProductModel> list = productProviders.getProducts;
+    bool isListEmpty = list.isEmpty;
+
 
     return Scaffold(
         appBar: AppBar(
@@ -45,7 +44,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     color: !util.isDarkTheme ? Colors.black87 : Colors.white)),
             backgroundColor:
                 util.isDarkTheme ? Theme.of(context).cardColor : Colors.white),
-        body: _isListEmpty
+        body: isListEmpty
             ? Padding(
                 padding: const EdgeInsets.all(10),
                 child: Center(

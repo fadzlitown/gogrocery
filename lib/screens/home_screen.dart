@@ -21,9 +21,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Utils util = Utils(context);
 
-    //Registered Provider
+    //Registered Provider list
     final productProviders = Provider.of<ProductProvider>(context);
     List<ProductModel> list = productProviders.getProducts;
+    List<ProductModel> listByOnSale = productProviders.getProductByOnSale;
 
     return Consumer<DarkThemeProvider>(
       builder: (context, provider, child) {
@@ -90,9 +91,11 @@ class HomeScreen extends StatelessWidget {
                     //must defined the sizedBox to wrap the listView
                     child: ListView.builder(
                       itemBuilder: (ctx, index) {
-                        return const OnSalesWidget();
+                        return ChangeNotifierProvider.value(
+                            value: listByOnSale[index],
+                            child: const OnSalesWidget());
                       },
-                      itemCount: 10,
+                      itemCount: listByOnSale.length > 3 ? 4 : listByOnSale.length,
                       scrollDirection: Axis.horizontal,
                     ),
                   ),
@@ -133,7 +136,9 @@ class HomeScreen extends StatelessWidget {
                 childAspectRatio:
                     util.getMediaSize.width / (util.getMediaSize.height * 0.55),
                 //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
-                children: List.generate(list.length < 4 ? list.length : 4 //keep only 4 PRODUCT in HOME SCreen
+                children: List.generate(
+                    list.length < 4 ? list.length : 4
+                    //keep only 4 PRODUCT in HOME SCreen
                     , (index) {
                   return ChangeNotifierProvider.value(
                       value: list[index], child: FeedItemWidget());
