@@ -5,6 +5,7 @@ import 'package:go_grocery/widgets/price_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../model/products_model.dart';
+import '../screens/feed/feed_detail_screen.dart';
 import '../services/Utils.dart';
 
 class OnSalesWidget extends StatefulWidget {
@@ -20,7 +21,7 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
   @override
   Widget build(BuildContext context) {
     //Registered Provider Model
-    ProductModel model = Provider.of<ProductModel>(context);
+    ProductModel product = Provider.of<ProductModel>(context);
 
     Size size = Utils(context).getMediaSize;
     final color = Utils(context).color;
@@ -31,7 +32,9 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
         color: Theme.of(context).cardColor.withOpacity(0.9),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: (){},
+          onTap: (){
+            Navigator.pushNamed(context, FeedDetailScreen.routeName, arguments: product.id);
+          },
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -45,12 +48,12 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        FancyShimmerImage(imageUrl: model.imageUrl ,height: size.width*0.20, width: size.width*0.20, boxFit: BoxFit.fill),
+                        FancyShimmerImage(imageUrl: product.imageUrl ,height: size.width*0.20, width: size.width*0.20, boxFit: BoxFit.fill),
                         // Image.network("https://via.placeholder.com/80x80",
                         //     height: size.height*0.12, fit: BoxFit.fill),
                         const SizedBox(height: 10, width: 10,),
                         Column(children: [
-                          Text(model.isPiece ? '1 piece' : '1 kg', style: TextStyle(color: color, fontSize: 18)),
+                          Text(product.isPiece ? '1 piece' : '1 kg', style: TextStyle(color: color, fontSize: 18)),
                           const SizedBox(height: 6),
                           Row(children: [
                             GestureDetector(
@@ -69,9 +72,9 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
                       ],),
                   ],
                 ),
-                PriceWidget(price: model.price, salePrice: model.salePrice, textPrice: '1', isOnSale: model.isOnSale),
+                PriceWidget(price: product.price, salePrice: product.salePrice, textPrice: '1', isOnSale: product.isOnSale),
                 const SizedBox(height: 5,),
-                Text(model.title, style: TextStyle(color: color, fontSize: 16),),
+                Text(product.title, style: TextStyle(color: color, fontSize: 16),),
                 const SizedBox(height: 5,),
               ]
             ),

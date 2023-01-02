@@ -13,7 +13,7 @@ class PriceWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final util = Utils(context);
-    double userPrice = isOnSale? salePrice : price;
+    double userPrice = isOnSale ? salePrice : price;
 
     return FittedBox(
       //FittedBox the image is stretched to fill the entire [Container]

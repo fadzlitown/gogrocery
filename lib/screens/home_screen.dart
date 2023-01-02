@@ -1,7 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:go_grocery/provider/dark_theme_provider.dart';
 import 'package:go_grocery/screens/feed_screen.dart';
 import 'package:go_grocery/screens/onsale_screen.dart';
 import 'package:go_grocery/services/Utils.dart';
@@ -26,10 +25,8 @@ class HomeScreen extends StatelessWidget {
     List<ProductModel> list = productProviders.getProducts;
     List<ProductModel> listByOnSale = productProviders.getProductByOnSale;
 
-    return Consumer<DarkThemeProvider>(
-      builder: (context, provider, child) {
-        return Scaffold(
-            body: SingleChildScrollView(
+    return Scaffold(
+        body: SingleChildScrollView(
           child: Column(children: [
             SizedBox(
                 height: util.getMediaSize.height * 0.33,
@@ -125,8 +122,8 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             GridView.count(
-                //todo If Children has a combination of list like this home screen
-                ///todo w/out physics & shrinkWrap --> getting this error RenderBox was not laid out: RenderRepaintBoundary#a664d relayoutBoundary=up15 NEEDS-PAINT. Thus,
+              //todo If Children has a combination of list like this home screen
+              ///todo w/out physics & shrinkWrap --> getting this error RenderBox was not laid out: RenderRepaintBoundary#a664d relayoutBoundary=up15 NEEDS-PAINT. Thus,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 crossAxisCount: 2,
@@ -134,38 +131,15 @@ class HomeScreen extends StatelessWidget {
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
                 childAspectRatio:
-                    util.getMediaSize.width / (util.getMediaSize.height * 0.55),
+                util.getMediaSize.width / (util.getMediaSize.height * 0.55),
                 //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
                 children: List.generate(
                     list.length < 4 ? list.length : 4
                     //keep only 4 PRODUCT in HOME SCreen
                     , (index) {
-                  return ChangeNotifierProvider.value(
-                      value: list[index], child: FeedItemWidget());
-                }))
+                  return ChangeNotifierProvider.value(value: list[index],
+                      child: FeedItemWidget());                }))
           ]),
         ));
-      },
-    );
   }
-
-//TODO or alternatively can used STATEFUL WIDGET using Provider.of<DarkThemeProvider>(context);
-/*
-*   final themeState = Provider.of<DarkThemeProvider>(context);
-    return Scaffold(
-      body: Center(
-          child: SwitchListTile(
-        title: Text('Theme'),
-        secondary: Icon(themeState.getDarkTheme
-            ? Icons.dark_mode_outlined
-            : Icons.light_mode_outlined),
-        onChanged: (bool value) {
-         setState(() {
-            themeState.setDarkTheme = value;
-         });
-        },
-        value: themeState.getDarkTheme,
-      )),
-    );
-* */
 }

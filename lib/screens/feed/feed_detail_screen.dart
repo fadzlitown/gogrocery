@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_grocery/model/products_model.dart';
+import 'package:go_grocery/provider/products_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../services/Utils.dart';
 import '../../widgets/back_widget.dart';
@@ -43,30 +46,35 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
+    final productId = ModalRoute.of(context)?.settings.arguments as String;
+    final provider = Provider.of<ProductProvider>(context);
+    final product = provider.getProductById(productId);
+
+    double finalPrice = product.isOnSale ? product.salePrice : product.price;
+    double totalPrice = finalPrice * int.parse(_quantityController.text);
 
     return  Scaffold(appBar: AppBar(
         elevation: 5,
         backgroundColor:
         util.isDarkTheme ? Theme.of(context).cardColor : Colors.white,
         leading: const BackWidget(),
-        title: Text(
-          'Detail',
+        title: Text('Detail',
           style: TextStyle(
               color: !util.isDarkTheme ? Colors.black87 : Colors.white),
         )),
       body: Column(
         children: [
         FancyShimmerImage(
-            imageUrl: 'https://via.placeholder.com/120x120',
+            imageUrl: product.imageUrl,
             height: util.getMediaSize.width * 0.5,
             width: double.infinity,
-            boxFit: BoxFit.fill),
+            boxFit: BoxFit.fitHeight),
         Padding(
           padding: const EdgeInsets.all(15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Product Name', style: TextStyle(color: util.color, fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(product.title, style: TextStyle(color: util.color, fontSize: 20, fontWeight: FontWeight.bold)),
               GestureDetector(
                 child: Icon(IconlyLight.heart, size: 22, color: util.color),
                 onTap: (){
@@ -82,8 +90,19 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
               children: [
                 Row(
                   children: [
-                    PriceWidget(price: 3.00,salePrice: 2.00,textPrice: '1', isOnSale: false,),
-                    Text('/kg', style: TextStyle(color: util.color, fontSize: 20, fontWeight: FontWeight.normal)),
+                    Text(
+                      '\$${finalPrice.toStringAsFixed(2)}',
+                      style: const TextStyle(color: Colors.green, fontSize: 22),
+                    ),
+                    // PriceWidget(price: product.price,salePrice: product.salePrice,textPrice: '1', isOnSale: product.isOnSale,),
+                    Text(product.isPiece ? '/piece  ':'/kg  ', style: TextStyle(color: util.color, fontSize: 20, fontWeight: FontWeight.normal)),
+                    Visibility(
+                      visible: product.isOnSale,
+                      child: Text(
+                        '\$${product.price.toStringAsFixed(2)}',
+                        style: TextStyle(color: util.color, fontSize: 17, decoration: TextDecoration.lineThrough ),
+                      ),
+                    )
                   ],
                 ),
                 GreenButtonWidget('Free Delivery', true, (){}),
@@ -123,8 +142,9 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                         ],
                         onChanged: (val){
                           setState(() {
-                            if(val.isEmpty) _quantityController.text='1';
-                            else {
+                            if(val.isEmpty) {
+                              _quantityController.text='1';
+                            } else {
                               return;
                             }
                           });
@@ -168,8 +188,12 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        PriceWidget(price: 3.00,salePrice: 2.00,textPrice: _quantityController.text, isOnSale: false,),
-                        Text('/kg', style: TextStyle(color: util.color, fontSize: 20, fontWeight: FontWeight.normal)),
+                        Text(
+                          '\$${totalPrice.toStringAsFixed(2)}',
+                          style: const TextStyle(color: Colors.green, fontSize: 22),
+                        ),
+                        // PriceWidget(price: product.price ,salePrice: product.salePrice ,textPrice: _quantityController.text, isOnSale: product.isOnSale,),
+                        Text(product.isPiece ? '/${_quantityController.text} piece':'/${_quantityController.text} kg', style: TextStyle(color: util.color, fontSize: 20, fontWeight: FontWeight.normal)),
                       ],
                     ),
                   ],

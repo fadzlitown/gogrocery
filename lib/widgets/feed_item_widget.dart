@@ -7,6 +7,8 @@ import 'package:go_grocery/services/Utils.dart';
 import 'package:go_grocery/widgets/price_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../screens/feed/feed_detail_screen.dart';
+
 class FeedItemWidget extends StatefulWidget {
 
   @override
@@ -26,10 +28,12 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
     return Material(
         color: Theme.of(context).cardColor,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, FeedDetailScreen.routeName, arguments: product.id);
+          },
           borderRadius: BorderRadius.circular(10),
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Column(
               children: [
                 FancyShimmerImage(
@@ -52,12 +56,12 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
                     ],
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    PriceWidget(salePrice: product.salePrice, price: product.price, textPrice: '1', isOnSale:  product.isOnSale),
-                    Spacer(),
+                    PriceWidget(salePrice: product.salePrice, price: product.price, textPrice: _kgProductItemController.text, isOnSale:  product.isOnSale),
+                    const Spacer(),
                     Flexible(
                       child: TextFormField(
                           maxLines: 1,
@@ -128,7 +132,7 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
                 //   ),
                 //   ],),
 
-                TextButton(onPressed: () {}, child: Text('Add to cart'))
+                TextButton(onPressed: () {}, child: const Text('Add to cart'))
               ],
             ),
           ),
