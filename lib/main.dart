@@ -4,6 +4,7 @@ import 'package:go_grocery/provider/products_provider.dart';
 import 'package:go_grocery/screens/auth/forget_password.dart';
 import 'package:go_grocery/screens/auth/login_screen.dart';
 import 'package:go_grocery/screens/auth/register.dart';
+import 'package:go_grocery/screens/category_screen.dart';
 import 'package:go_grocery/screens/feed/feed_detail_screen.dart';
 import 'package:go_grocery/screens/feed_screen.dart';
 import 'package:go_grocery/screens/nav_btm_bar.dart';
@@ -66,6 +67,7 @@ class _MyAppState extends State<MyApp> {
               ForgetPasswordScreen.routeName : (context) =>  const ForgetPasswordScreen(),
               NavBottomBarScreen.routeName : (context) =>   NavBottomBarScreen(),
               OnSaleScreen.routeName: (context) => const OnSaleScreen(),
+              CategoryScreen.routeName: (context) => const CategoryScreen(),
               FeedScreen.routeName : (context) => const FeedScreen(),
               FeedDetailScreen.routeName : (context) =>  FeedDetailScreen(quantity: 1,),
               WishlistScreen.routeName : (context) =>  const WishlistScreen(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/Utils.dart';
+import 'category_screen.dart';
 
 class CategoriesScreen extends StatelessWidget {
 
@@ -75,7 +76,7 @@ class CategoriesScreen extends StatelessWidget {
           ),
               ),
               onTap: (){
-                    print('Cat pressed');
+                Navigator.pushNamed(context, CategoryScreen.routeName, arguments: catList[index]['catText']);
               });
         }),
       ),
