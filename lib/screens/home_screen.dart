@@ -120,8 +120,17 @@ class HomeScreen extends StatelessWidget {
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
                 childAspectRatio: util.getMediaSize.width / (util.getMediaSize.height*0.55),  //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
-                children: List.generate(10, (index) {
-                  return  FeedItemWidget(salePrice: 2, price: 5.00, textPrice: "1",isOnSale: true,);
+                children: List.generate(
+                    Constants.productsList.length < 4 ? Constants.productsList.length : 4   //keep only 4 PRODUCT in HOME SCreen
+                , (index) {
+                  return  FeedItemWidget(
+                    name: Constants.productsList[index].title,
+                    salePrice: Constants.productsList[index].salePrice,
+                    price: Constants.productsList[index].price,
+                    textPrice: Constants.productsList[index].title,
+                    isOnSale: Constants.productsList[index].isOnSale,
+                    imageUrl: Constants.productsList[index].imageUrl,
+                  );
                 }))
           ]),
         ));

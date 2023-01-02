@@ -5,13 +5,19 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/services/Utils.dart';
 import 'package:go_grocery/widgets/price_widget.dart';
 
-class FeedItemWidget extends StatelessWidget {
+class FeedItemWidget extends StatefulWidget {
   final double salePrice, price;
   final String textPrice;
+  final String name, imageUrl;
   final bool isOnSale;
 
-  FeedItemWidget({required this.salePrice, required this.price, required this.textPrice, required this.isOnSale});
+  FeedItemWidget({required this.salePrice, required this.price, required this.textPrice, required this.isOnSale, required this.name, required this.imageUrl});
 
+  @override
+  State<FeedItemWidget> createState() => _FeedItemWidgetState();
+}
+
+class _FeedItemWidgetState extends State<FeedItemWidget> {
   final TextEditingController _kgProductItemController =
       TextEditingController(text: "1");
 
@@ -30,26 +36,30 @@ class FeedItemWidget extends StatelessWidget {
             child: Column(
               children: [
                 FancyShimmerImage(
-                    imageUrl: 'https://via.placeholder.com/80x80',
+                    imageUrl: widget.imageUrl,
                     height: size.width * 0.20,
                     width: size.width * 0.20,
                     boxFit: BoxFit.fill),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Cucumbers',
-                        style: TextStyle(
-                            color: color,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold)),
-                    Icon(IconlyLight.heart, color: color)
-                  ],
+                Flexible(   // TODO l --> NAME COULD BE LENGTHY, so to avoid UI OVERFLOWED USE --> FLEXIBLE - ROW - EXPANDED
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(widget.name,
+                            style: TextStyle(
+                                color: color,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                      Icon(IconlyLight.heart, color: color)
+                    ],
+                  ),
                 ),
                 SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    PriceWidget(salePrice: 1.00, price: 4.50, textPrice: '1', isOnSale: true),
+                    PriceWidget(salePrice: widget.salePrice, price: widget.price, textPrice: '1', isOnSale:  widget.isOnSale),
                     Spacer(),
                     Flexible(
                       child: TextFormField(
