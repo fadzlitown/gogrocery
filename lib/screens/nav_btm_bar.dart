@@ -12,6 +12,8 @@ import '../provider/dark_theme_provider.dart';
 class NavBottomBarScreen extends StatefulWidget {
   @override
   State<NavBottomBarScreen> createState() => _NavBottomBarScreenState();
+  static const routeName = "/NavBottomBarScreen";
+
 }
 
 class _NavBottomBarScreenState extends State<NavBottomBarScreen> {

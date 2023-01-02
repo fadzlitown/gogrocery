@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
+import 'package:go_grocery/screens/auth/forget_password.dart';
 import 'package:go_grocery/screens/auth/login_screen.dart';
+import 'package:go_grocery/screens/auth/register.dart';
 import 'package:go_grocery/screens/feed/feed_detail_screen.dart';
 import 'package:go_grocery/screens/feed_screen.dart';
-import 'package:go_grocery/screens/home_screen.dart';
 import 'package:go_grocery/screens/nav_btm_bar.dart';
 import 'package:go_grocery/screens/onsale_screen.dart';
 import 'package:go_grocery/screens/orders/orders_screen.dart';
 import 'package:go_grocery/screens/viewedRecently/viewed_recently_screen.dart';
 import 'package:go_grocery/screens/wishlist/wishlist_screen.dart';
-import 'package:go_grocery/services/dark_theme_prefs.dart';
 import 'package:provider/provider.dart';
 
 import 'consts/theme_data.dart';
@@ -58,6 +58,10 @@ class _MyAppState extends State<MyApp> {
             theme: Styles.themeData(provider.getDarkTheme, context),
             home:  const LoginScreen(),
             routes: {
+              RegisterScreen.routeName : (context) =>  const RegisterScreen(),
+              LoginScreen.routeName : (context) =>  const LoginScreen(),
+              ForgetPasswordScreen.routeName : (context) =>  const ForgetPasswordScreen(),
+              NavBottomBarScreen.routeName : (context) =>   NavBottomBarScreen(),
               OnSaleScreen.routeName: (context) => const OnSaleScreen(),
               FeedScreen.routeName : (context) => const FeedScreen(),
               FeedDetailScreen.routeName : (context) =>  FeedDetailScreen(quantity: 1,),

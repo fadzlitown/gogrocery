@@ -1,56 +1,69 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_grocery/screens/auth/forget_password.dart';
-import 'package:go_grocery/screens/auth/register.dart';
-import 'package:go_grocery/services/global_methods.dart';
+import 'package:go_grocery/widgets/back_widget.dart';
 
 import '../../consts/constants.dart';
 import '../../services/Utils.dart';
+import '../../services/global_methods.dart';
 import '../../widgets/auth_button_widget.dart';
-import '../../widgets/google_signin_button.dart';
-import '../nav_btm_bar.dart';
+import 'login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget { //todo used Stateful coz need to keep all the field state!!
+  const RegisterScreen({Key? key}) : super(key: key);
 
-  static const routeName = "/LoginScreen";
+  static const routeName = "/RegisterScreen";
 
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+
   final _emailTextController = TextEditingController();
   final _passTextController = TextEditingController();
+  final _fullNameTextController = TextEditingController();
+  final _addressTextController = TextEditingController();
+  final _fullNameFocusNode = FocusNode();
+  final _emailFocusNode = FocusNode();
   final _passFocusNode = FocusNode();
+  final _addressFocusNode = FocusNode();
+  bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
 
-  bool _obscureText = true;
 
   @override
   void dispose() {
     super.dispose();
-    _emailTextController.dispose();
-    _passTextController.dispose();
-    _passFocusNode.dispose();
+     _emailTextController.dispose();
+     _passTextController.dispose();
+     _fullNameTextController.dispose();
+     _addressTextController.dispose();
+     _emailFocusNode.dispose();
+    _fullNameFocusNode.dispose();
+     _passFocusNode.dispose();
+     _addressFocusNode.dispose();
   }
 
-  void _submitOnLogin() {
+  void _submitFormOnRegister() async{
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    if (isValid) {
-      print('Valid Form');
-      Navigator.pushReplacementNamed(context, NavBottomBarScreen.routeName);
-      //todo - if success, replace the login with HOME Screen so that user can't go back to login state again
+    if(isValid){  //if form is valid then only save it
+      _formKey.currentState!.save();
+      GlobalMethods.navigateTo(context: context, name: LoginScreen.routeName);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final util = Utils(context);
-
     return Scaffold(
+      appBar: AppBar(
+        leading: const BackWidget(),
+        backgroundColor: Colors.white.withOpacity(0.3), //You can make this transparent
+        elevation: 1.0, //No shadow
+      ),
       resizeToAvoidBottomInset: false,  //TODO L - to avoid ERROR Bottom overloaded by 213 pixels , then used this on Scaffold
       body: Stack(
         //todo -> y using Stack? bcs login screen has overlapping widgets over background
@@ -101,9 +114,39 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         TextFormField(
                           textInputAction: TextInputAction.next,
+                          onEditingComplete: () { //lepas habis focus email field pulak _emailFocusNode
+                            FocusScope.of(context).requestFocus(_emailFocusNode);
+                          },
+                          focusNode: _fullNameFocusNode,
+                          controller: _fullNameTextController,
+                          keyboardType: TextInputType.text,
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return 'Please enter a valid name';
+                            } else {
+                              return null;
+                            }
+                          },
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                              hintText: 'Fullname',
+                              hintStyle: TextStyle(color: Colors.white),
+                              errorBorder: UnderlineInputBorder(  // when validating failed
+                                  borderSide: BorderSide(color: Colors.red)),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white)),
+                              focusedBorder: UnderlineInputBorder(  //when user focus on this field
+                                  borderSide: BorderSide(color: Colors.blue))),
+                        ), //todo focus will be moving to the next field
+
+                        SizedBox(height: util.getMediaSize.height * 0.01),
+
+                        TextFormField(
+                          textInputAction: TextInputAction.next,
                           onEditingComplete: () {
                             FocusScope.of(context).requestFocus(_passFocusNode);
                           },
+                          focusNode: _emailFocusNode,
                           controller: _emailTextController,
                           keyboardType: TextInputType.emailAddress,
                           validator: (val) {
@@ -126,11 +169,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               focusedBorder: UnderlineInputBorder(  //when user focus on this field
                                   borderSide: BorderSide(color: Colors.blue))),
                         ), //todo focus will be moving to the next field
-                        const SizedBox(height: 10),
+
+                        SizedBox(height: util.getMediaSize.height * 0.01),
+
                         TextFormField(
-                          textInputAction: TextInputAction.done,
+                          textInputAction: TextInputAction.next,
                           onEditingComplete: () {
-                            _submitOnLogin();
+                            FocusScope.of(context).requestFocus(_addressFocusNode);
                           },
                           controller: _passTextController,
                           focusNode: _passFocusNode,
@@ -164,6 +209,37 @@ class _LoginScreenState extends State<LoginScreen> {
                               focusedBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.blue))),
                         ), //todo focus will be moving to the next field
+
+                        SizedBox(height: util.getMediaSize.height * 0.01),
+
+                        TextFormField(
+                          maxLines: 3,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: () { //lepas habis focus email field pulak _emailFocusNode
+                            _submitFormOnRegister();
+                          },
+                          focusNode: _addressFocusNode,
+                          controller: _addressTextController,
+                          keyboardType: TextInputType.text,
+                          validator: (val) {
+                            if (val!.isEmpty && val.length<10) {
+                              return 'Please enter a valid address';
+                            } else {
+                              return null;
+                            }
+                          },
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                              hintText: 'Shipping Address',
+                              hintStyle: TextStyle(color: Colors.white),
+                              errorBorder: UnderlineInputBorder(  // when validating failed
+                                  borderSide: BorderSide(color: Colors.red)),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white)),
+                              focusedBorder: UnderlineInputBorder(  //when user focus on this field
+                                  borderSide: BorderSide(color: Colors.blue))),
+                        ),
+
                         TextButton(
                           onPressed: () {
                             Navigator.pushReplacementNamed(context, ForgetPasswordScreen.routeName);
@@ -178,25 +254,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         SizedBox(height: util.getMediaSize.height * 0.04),
-                        AuthButtonWidget('Sign In', (){
-                          _submitOnLogin();
+                        AuthButtonWidget('Sign Up', (){
+                          _submitFormOnRegister();
                         }, Colors.grey.withOpacity(0.5)),
-                        SizedBox(height: util.getMediaSize.height * 0.02),
-                        GoogleSignInButton(),
-                        SizedBox(height: util.getMediaSize.height * 0.02),
-                        Row(children: const [
-                          Expanded(child: Divider(color: Colors.white, thickness: 1,)),
-                          SizedBox(width: 5),
-                          Text('OR', style: TextStyle(color: Colors.white),),
-                          SizedBox(width: 5),
-                          Expanded(child: Divider(color: Colors.white, thickness: 1,)),
-                        ],),
-                        SizedBox(height: util.getMediaSize.height * 0.02),
-                        AuthButtonWidget('Continue as a Guest', (){}, Colors.black),
                         Row(
                           children: [
                             const Text(
-                              'Don\'t have an account?',
+                              'Already a user?',
                               style: TextStyle(
                                   fontStyle: FontStyle.normal,
                                   fontSize: 16,
@@ -205,12 +269,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                GlobalMethods.navigateTo(context: context, name: RegisterScreen.routeName);
+                                //todo l - if there's an existing screen on backstack? then uses POP or PUSH REPLACEMENT
+                                Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+
+                                //OR
+                                // if(Navigator.canPop(context)){
+                                //   Navigator.pop(context);
+                                // } else {
+                                //   null;
+                                // }
+
                               },
                               child: const Text(
-                                'Sign Up',
+                                'Sign In',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w600,
                                     fontStyle: FontStyle.normal,
                                     fontSize: 16,
                                     color: Colors.lightBlue,

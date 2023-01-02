@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/screens/cart/empty_cart.dart';
 import 'package:go_grocery/widgets/on_sale_widget.dart';
 
@@ -28,13 +27,15 @@ class OnSaleScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
                 child: Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                    EmptyScreen('No product on sale yet!', 'assets/images/box.png', false, '')
-                  ]),
+                        EmptyScreen('No product on sale yet!',
+                            'assets/images/box.png', false, '')
+                      ]),
                 ),
               )
             : GridView.count(
+
                 ///todo If this widget handling single list, then remove physics & shrinkWrap
                 crossAxisCount: 2,
                 padding: const EdgeInsets.all(5),
