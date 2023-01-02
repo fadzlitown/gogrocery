@@ -2,16 +2,12 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_grocery/model/products_model.dart';
 import 'package:go_grocery/services/Utils.dart';
 import 'package:go_grocery/widgets/price_widget.dart';
+import 'package:provider/provider.dart';
 
 class FeedItemWidget extends StatefulWidget {
-  final double salePrice, price;
-  final String textPrice;
-  final String name, imageUrl;
-  final bool isOnSale;
-
-  FeedItemWidget({required this.salePrice, required this.price, required this.textPrice, required this.isOnSale, required this.name, required this.imageUrl});
 
   @override
   State<FeedItemWidget> createState() => _FeedItemWidgetState();
@@ -25,6 +21,7 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
   Widget build(BuildContext context) {
     Size size = Utils(context).getMediaSize;
     final color = Utils(context).color;
+    final product = Provider.of<ProductModel>(context); //registered provider model
 
     return Material(
         color: Theme.of(context).cardColor,
@@ -36,7 +33,7 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
             child: Column(
               children: [
                 FancyShimmerImage(
-                    imageUrl: widget.imageUrl,
+                    imageUrl: product.imageUrl,
                     height: size.width * 0.20,
                     width: size.width * 0.20,
                     boxFit: BoxFit.fill),
@@ -45,7 +42,7 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Text(widget.name,
+                        child: Text(product.title,
                             style: TextStyle(
                                 color: color,
                                 fontSize: 20,
@@ -59,7 +56,7 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    PriceWidget(salePrice: widget.salePrice, price: widget.price, textPrice: '1', isOnSale:  widget.isOnSale),
+                    PriceWidget(salePrice: product.salePrice, price: product.price, textPrice: '1', isOnSale:  product.isOnSale),
                     Spacer(),
                     Flexible(
                       child: TextFormField(
@@ -88,7 +85,7 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
                           controller: _kgProductItemController),
                     ),
                     Text(
-                      'Kg ',
+                      product.isPiece ? 'piece' : 'kg ',
                       style: TextStyle(color: color, fontSize: 15),
                     ),
                   ],

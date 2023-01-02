@@ -8,6 +8,8 @@ import 'package:go_grocery/services/Utils.dart';
 import 'package:provider/provider.dart';
 
 import '../consts/constants.dart';
+import '../model/products_model.dart';
+import '../provider/products_provider.dart';
 import '../services/global_methods.dart';
 import '../widgets/feed_item_widget.dart';
 import '../widgets/on_sale_widget.dart';
@@ -19,6 +21,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Utils util = Utils(context);
 
+    //Registered Provider
+    final productProviders = Provider.of<ProductProvider>(context);
+    List<ProductModel> list = productProviders.getProducts;
+
     return Consumer<DarkThemeProvider>(
       builder: (context, provider, child) {
         return Scaffold(
@@ -29,7 +35,8 @@ class HomeScreen extends StatelessWidget {
                 child: Swiper(
                   itemCount: Constants.landingImages.length,
                   itemBuilder: (context, index) {
-                    return Image.asset(Constants.landingImages[index], fit: BoxFit.fill);
+                    return Image.asset(Constants.landingImages[index],
+                        fit: BoxFit.fill);
                   },
                   pagination: SwiperPagination(
                       alignment: Alignment.bottomCenter,
@@ -43,7 +50,8 @@ class HomeScreen extends StatelessWidget {
             ),
             TextButton(
                 onPressed: () {
-                  GlobalMethods.navigateTo(context: context, name: OnSaleScreen.routeName);
+                  GlobalMethods.navigateTo(
+                      context: context, name: OnSaleScreen.routeName);
                 },
                 child: const Text(
                   'View All',
@@ -57,7 +65,8 @@ class HomeScreen extends StatelessWidget {
               //todo Row cannot wrap ListView due to same row axis with ListView - RenderBox was not laid out: RenderRepaintBoundary#ca7ea relayoutBoundary=up7 NEEDS-PAINT
               // todo HENCE, Flexible required here to wrap inside ListView
               children: [
-                RotatedBox(   //todo RotatedBox --> to rotate any widget by angle!!
+                RotatedBox(
+                  //todo RotatedBox --> to rotate any widget by angle!!
                   quarterTurns: 135,
                   child: Padding(
                     padding: const EdgeInsets.all(6),
@@ -98,39 +107,36 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 //todo can use this for spacing or //Spacer() between the widgets
-                children:  [
+                children: [
                   const Text('Our Product',
                       style: TextStyle(color: Colors.black, fontSize: 25)),
                   //Spacer(), or use the mainAxis spaceBetween
-                  TextButton(onPressed: (){
-                    GlobalMethods.navigateTo(context: context, name: FeedScreen.routeName);
-                  }, child:
-                  const Text('Browse all',
-                      style: TextStyle(color: Colors.blue, fontSize: 18))),
+                  TextButton(
+                      onPressed: () {
+                        GlobalMethods.navigateTo(
+                            context: context, name: FeedScreen.routeName);
+                      },
+                      child: const Text('Browse all',
+                          style: TextStyle(color: Colors.blue, fontSize: 18))),
                 ],
               ),
             ),
             GridView.count(
-              //todo If Children has a combination of list like this home screen
-              ///todo w/out physics & shrinkWrap --> getting this error RenderBox was not laid out: RenderRepaintBoundary#a664d relayoutBoundary=up15 NEEDS-PAINT. Thus,
+                //todo If Children has a combination of list like this home screen
+                ///todo w/out physics & shrinkWrap --> getting this error RenderBox was not laid out: RenderRepaintBoundary#a664d relayoutBoundary=up15 NEEDS-PAINT. Thus,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 crossAxisCount: 2,
                 padding: const EdgeInsets.all(5),
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
-                childAspectRatio: util.getMediaSize.width / (util.getMediaSize.height*0.55),  //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
-                children: List.generate(
-                    Constants.productsList.length < 4 ? Constants.productsList.length : 4   //keep only 4 PRODUCT in HOME SCreen
-                , (index) {
-                  return  FeedItemWidget(
-                    name: Constants.productsList[index].title,
-                    salePrice: Constants.productsList[index].salePrice,
-                    price: Constants.productsList[index].price,
-                    textPrice: Constants.productsList[index].title,
-                    isOnSale: Constants.productsList[index].isOnSale,
-                    imageUrl: Constants.productsList[index].imageUrl,
-                  );
+                childAspectRatio:
+                    util.getMediaSize.width / (util.getMediaSize.height * 0.55),
+                //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
+                children: List.generate(list.length < 4 ? list.length : 4 //keep only 4 PRODUCT in HOME SCreen
+                    , (index) {
+                  return ChangeNotifierProvider.value(
+                      value: list[index], child: FeedItemWidget());
                 }))
           ]),
         ));

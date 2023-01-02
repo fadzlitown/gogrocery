@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_grocery/consts/constants.dart';
+import 'package:go_grocery/model/products_model.dart';
+import 'package:go_grocery/provider/products_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../services/Utils.dart';
 import '../widgets/back_widget.dart';
@@ -28,6 +31,10 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget build(BuildContext context) {
     Utils util = Utils(context);
     bool _isListEmpty = false;
+
+    //Registered Provider list
+    final productProviders = Provider.of<ProductProvider>(context);
+    List<ProductModel> list = productProviders.getProducts;
 
     return Scaffold(
         appBar: AppBar(
@@ -104,16 +111,10 @@ class _FeedScreenState extends State<FeedScreen> {
                           childAspectRatio: util.getMediaSize.width /
                               (util.getMediaSize.height * 0.59),
                           //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
-                          children: List.generate(Constants.productsList.length,
+                          children: List.generate(list.length,
                               (index) {
-                            return FeedItemWidget(
-                              name: Constants.productsList[index].title,
-                              salePrice: Constants.productsList[index].salePrice,
-                              price: Constants.productsList[index].price,
-                              textPrice: Constants.productsList[index].title,
-                              isOnSale: Constants.productsList[index].isOnSale,
-                              imageUrl: Constants.productsList[index].imageUrl,
-                            );
+                            return ChangeNotifierProvider.value(value: list[index],
+                            child: FeedItemWidget());
                           })),
                     ]),
               ));

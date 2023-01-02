@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
+import 'package:go_grocery/provider/products_provider.dart';
 import 'package:go_grocery/screens/auth/forget_password.dart';
 import 'package:go_grocery/screens/auth/login_screen.dart';
 import 'package:go_grocery/screens/auth/register.dart';
@@ -48,7 +49,9 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_) {
           return themeProvider;
-        })
+        }),
+        //should add at the highest hierarchy before widget
+        ChangeNotifierProvider(create: (_) => ProductProvider())
       ],
       child: Consumer<DarkThemeProvider>(
         builder: (context, provider, child) {
