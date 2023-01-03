@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_grocery/provider/viewed_provider.dart';
 import 'package:go_grocery/screens/cart/empty_cart.dart';
 import 'package:go_grocery/screens/viewedRecently/viewed_recently_widget.dart';
 import 'package:go_grocery/widgets/back_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../../services/Utils.dart';
 import '../../services/global_methods.dart';
@@ -16,7 +18,10 @@ class ViewedRecentlyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
-    bool isEmpty = false;
+
+    final provider = Provider.of<ViewedProvider>(context);
+    final list = provider.getViewedList.values.toList().reversed.toList();
+    bool isEmpty = list.isEmpty;
 
     return Scaffold(
         appBar: AppBar(
@@ -31,8 +36,12 @@ class ViewedRecentlyScreen extends StatelessWidget {
                           'Empty Viewed Items',
                           'Are you sure? ',
                           IconlyLight.delete,
-                          positiveCallback: () {},
-                          negativeCallback: () {});
+                          positiveCallback: () {
+                            provider.clearViewedList();
+                          },
+                          negativeCallback: () {
+                            if(Navigator.canPop(context)) Navigator.pop(context);
+                          });
                     },
                     icon: Icon(IconlyBroken.delete, color: util.color)),
               )
@@ -47,9 +56,11 @@ class ViewedRecentlyScreen extends StatelessWidget {
             )),
         body: isEmpty ? EmptyScreen('Your history is empty', 'assets/images/history.png', true, 'Browse Now!') : ListView.builder(
           itemBuilder: (context, index) {
-            return const ViewedRecentlyWidget();
+            return ChangeNotifierProvider.value(
+                value: list[index],
+                child: const ViewedRecentlyWidget());
           },
-          itemCount: 10,
+          itemCount: list.length,
         ));
   }
 }

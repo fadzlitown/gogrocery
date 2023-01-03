@@ -2,7 +2,12 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_grocery/model/viewed_model.dart';
+import 'package:go_grocery/provider/products_provider.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/cart_provider.dart';
+import '../../provider/viewed_provider.dart';
 import '../../services/Utils.dart';
 import '../../services/global_methods.dart';
 import '../../widgets/price_widget.dart';
@@ -20,10 +25,17 @@ class _ViewedRecentlyWidgetState extends State<ViewedRecentlyWidget> {
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
+    final productProvider = Provider.of<ProductProvider>(context);
+    final viewedProduct = Provider.of<ViewedModel>(context);
+    final product = productProvider.getProductById(viewedProduct.productId);
+    double finalPrice = product.isOnSale ? product.salePrice : product.price;
+
+    final cartProvider = Provider.of<CartProvider>(context); //registered provider model
+    bool? isCartExisted = cartProvider.getCartItems.containsKey(product.id);
+
     return GestureDetector(
       onTap: () {
-        GlobalMethods.navigateTo(
-            context: context, name: FeedDetailScreen.routeName);
+        Navigator.pushNamed(context, FeedDetailScreen.routeName, arguments: product.id);
       },
       child: Container(
         margin: const EdgeInsets.all(10),
@@ -44,31 +56,33 @@ class _ViewedRecentlyWidgetState extends State<ViewedRecentlyWidget> {
                       width: util.getMediaSize.width * 0.2,
                       height: util.getMediaSize.width * 0.2,
                       child: FancyShimmerImage(
-                          imageUrl: 'https://via.placeholder.com/80x80',
+                          imageUrl: product.imageUrl,
                           boxFit: BoxFit.fill)),
                   const Spacer(),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Product name x10',
+                      Text(product.title,
                           style: TextStyle(
                               color: util.color,
                               fontSize: 16,
                               fontWeight: FontWeight.bold)),
                       PriceWidget(
-                        price: 3.00,
-                        salePrice: 2.00,
+                        price: finalPrice,
+                        salePrice: product.salePrice,
                         textPrice: '1',
-                        isOnSale: false,
+                        isOnSale: product.isOnSale,
                       ),
                     ],
                   ),
                   const Spacer(),
                   QuantityIncrementDecrement(
                       util: util,
-                      icon: CupertinoIcons.plus,
+                      icon: isCartExisted ?  CupertinoIcons.check_mark : CupertinoIcons.plus,
                       color: Colors.green,
-                      func: () {})
+                      func: () {
+                        if(!isCartExisted) cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                      })
                 ],
               )
             ],
