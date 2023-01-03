@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1098537346219",
+    "project_id": "meatlokal-ad1de",
+    "storage_bucket": "meatlokal-ad1de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098537346219:android:95d71f3dceb5fc811343ee",
+        "android_client_info": {
+          "package_name": "com.inovasiti.go_grocery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1098537346219-5jtk84tlv0vqrdbjfm6rp6h3a64pth4s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE3oj2dCfl0w7jFK_OqaIAWsAZkm7-Hr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1098537346219-5jtk84tlv0vqrdbjfm6rp6h3a64pth4s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
