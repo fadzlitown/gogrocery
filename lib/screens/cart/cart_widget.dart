@@ -3,16 +3,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_grocery/model/cart_model.dart';
+import 'package:go_grocery/provider/products_provider.dart';
 import 'package:go_grocery/services/global_methods.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/cart_provider.dart';
 import '../../services/Utils.dart';
 import '../../widgets/quantity_increment_decrement.dart';
 import '../feed/feed_detail_screen.dart';
 
 class CartWidget extends StatefulWidget {
   int quantity = 1;
+  String productId;
 
-  CartWidget({required this.quantity});
+  CartWidget({required this.productId, required this.quantity});
 
   @override
   State<CartWidget> createState() => _CartWidgetState();
@@ -38,11 +43,19 @@ class _CartWidgetState extends State<CartWidget> {
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
+    final provider = Provider.of<ProductProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+    final product = provider.getProductById(widget.productId);
+    double finalPrice = product.isOnSale ? product.salePrice : product.price;
+
+    final cart = Provider.of<CartModel>(context);
+    _quantityController.text = (cart.quantity).toString();
+    double totalPrice = finalPrice * int.parse(_quantityController.text);
 
     return GestureDetector(
       //a widget that detects gestures, eg. any taps / pressed / drag
       onTap: () {
-        GlobalMethods.navigateTo(context: context, name: FeedDetailScreen.routeName);
+        Navigator.pushNamed(context, FeedDetailScreen.routeName, arguments: cart.productId);
       },
       child: Container(
         margin: const EdgeInsets.all(7),
@@ -59,14 +72,14 @@ class _CartWidgetState extends State<CartWidget> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12)),
               child: FancyShimmerImage(
-                  imageUrl: 'https://via.placeholder.com/80x80',
+                  imageUrl: product.imageUrl,
                   height: util.getMediaSize.width * 0.20,
                   width: util.getMediaSize.width * 0.20,
                   boxFit: BoxFit.fill),
             ),
             Column(
               children: [
-                Text('Title',
+                Text(product.title,
                     style: TextStyle(
                         color: util.color,
                         fontSize: 20,
@@ -83,14 +96,16 @@ class _CartWidgetState extends State<CartWidget> {
                           icon: CupertinoIcons.minus,
                           color: Colors.red,
                           func: () {
-                            if(_quantityController.text=='1'){
-                              return;
-                            } else {
-                              setState(() {
-                                _quantityController.text=(int.parse(_quantityController.text)-1).toString();
-                              });
-                            }
-
+                            setState(() {
+                              if(_quantityController.text=='1'){
+                                return;
+                              } else {
+                                cartProvider.addQuantityPlusOrMinusOne(productId: cart.productId,  isPlusOne: false);
+                                setState(() {
+                                  _quantityController.text=(int.parse(_quantityController.text)-1).toString();
+                                });
+                              }
+                            });
                           }),
                       Flexible(
                         flex: 1,
@@ -122,16 +137,15 @@ class _CartWidgetState extends State<CartWidget> {
                           icon: CupertinoIcons.plus,
                           color: Colors.green,
                           func: () {
-                            if(_quantityController.text=='1'){
-                              setState(() {
+                            cartProvider.addQuantityPlusOrMinusOne(productId: cart.productId,  isPlusOne: true);
+                            setState(() {
+                              if(_quantityController.text=='1'){
                                 _quantityController.text=(int.parse(_quantityController.text)+1).toString();
-                              });
-                              return;
-                            } else {
-                              setState(() {
+                                return;
+                              } else {
                                 _quantityController.text=(int.parse(_quantityController.text)+1).toString();
-                              });
-                            }
+                              }
+                            });
                           }),
                     ],
                   ),
@@ -143,10 +157,11 @@ class _CartWidgetState extends State<CartWidget> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(children: [
                   InkWell(onTap: (){
+                    cartProvider.removeItem(cart.productId);
                   }, child: const Icon(CupertinoIcons.cart_badge_minus, color: Colors.red, size: 20,),),
                   const SizedBox(height: 7), //add some margin
                   Icon(IconlyLight.heart, color: util.color),
-                  Text('\$0.50', style: TextStyle(color: util.color ),)
+                  Text('\$${totalPrice.toStringAsFixed(2)}', style: TextStyle(color: util.color ),)
                 ],)),
             const SizedBox(width: 8)
           ],

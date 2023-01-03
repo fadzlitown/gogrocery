@@ -5,6 +5,7 @@ import 'package:go_grocery/widgets/price_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../model/products_model.dart';
+import '../provider/cart_provider.dart';
 import '../screens/feed/feed_detail_screen.dart';
 import '../services/Utils.dart';
 
@@ -22,6 +23,8 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
   Widget build(BuildContext context) {
     //Registered Provider Model
     ProductModel product = Provider.of<ProductModel>(context);
+    final cartProvider = Provider.of<CartProvider>(context); //registered provider model
+    bool? isCartExisted = cartProvider.getCartItems.containsKey(product.id);
 
     Size size = Utils(context).getMediaSize;
     final color = Utils(context).color;
@@ -57,8 +60,9 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
                           const SizedBox(height: 6),
                           Row(children: [
                             GestureDetector(
-                              child: Icon(IconlyLight.bag, size: 22, color: color),
+                              child:  Icon(isCartExisted ?  IconlyBold.bag : IconlyLight.bag, size: 22, color: color),
                               onTap: (){
+                                if(!isCartExisted) cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
                                 print('Bag pressed');
                               },
                             ),

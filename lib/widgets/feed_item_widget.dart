@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/model/products_model.dart';
+import 'package:go_grocery/provider/cart_provider.dart';
 import 'package:go_grocery/services/Utils.dart';
 import 'package:go_grocery/widgets/price_widget.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,8 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
     Size size = Utils(context).getMediaSize;
     final color = Utils(context).color;
     final product = Provider.of<ProductModel>(context); //registered provider model
+    final cartProvider = Provider.of<CartProvider>(context); //registered provider model
+    bool? isCartExisted = cartProvider.getCartItems.containsKey(product.id);
 
     return Material(
         color: Theme.of(context).cardColor,
@@ -132,7 +135,11 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
                 //   ),
                 //   ],),
 
-                TextButton(onPressed: () {}, child: const Text('Add to cart'))
+                TextButton(onPressed: () {
+                  if(!isCartExisted) {
+                    cartProvider.addProductIntoCart(productId: product.id, quantity: int.parse(_kgProductItemController.text));
+                  }
+                }, child: isCartExisted ? const Text('In Cart') : const Text('Add to cart')  )
               ],
             ),
           ),

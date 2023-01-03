@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_grocery/provider/cart_provider.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
 import 'package:go_grocery/provider/products_provider.dart';
 import 'package:go_grocery/screens/auth/forget_password.dart';
@@ -52,7 +53,8 @@ class _MyAppState extends State<MyApp> {
           return themeProvider;
         }),
         //should add at the highest hierarchy before widget
-        ChangeNotifierProvider(create: (_) => ProductProvider())
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
       ],
       child: Consumer<DarkThemeProvider>(
         builder: (context, provider, child) {
@@ -69,7 +71,7 @@ class _MyAppState extends State<MyApp> {
               OnSaleScreen.routeName: (context) => const OnSaleScreen(),
               CategoryScreen.routeName: (context) => const CategoryScreen(),
               FeedScreen.routeName : (context) => const FeedScreen(),
-              FeedDetailScreen.routeName : (context) =>  FeedDetailScreen(quantity: 1,),
+              FeedDetailScreen.routeName : (context) =>  FeedDetailScreen(),
               WishlistScreen.routeName : (context) =>  const WishlistScreen(),
               OrdersScreen.routeName : (context) =>  const OrdersScreen(),
               ViewedRecentlyScreen.routeName : (context) =>  const ViewedRecentlyScreen(),

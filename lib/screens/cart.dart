@@ -3,7 +3,9 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/screens/cart/cart_widget.dart';
 import 'package:go_grocery/screens/cart/empty_cart.dart';
 import 'package:go_grocery/widgets/green_btn_widget.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/cart_provider.dart';
 import '../services/Utils.dart';
 import '../services/global_methods.dart';
 
@@ -13,7 +15,9 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
-    bool isEmpty = false;
+    final cartProvider = Provider.of<CartProvider>(context); //registered provider model
+    final cartItemsList = cartProvider.getCartItems.values.toList().reversed.toList();
+    bool isEmpty = cartItemsList.isEmpty;
 
     return Scaffold(
         appBar: AppBar(
@@ -24,7 +28,11 @@ class CartScreen extends StatelessWidget {
                     onPressed: () {
                       GlobalMethods.showOkCancelDialog(context, 'Empty Cart',
                           'Are you sure? ', IconlyLight.delete,
-                          positiveCallback: () {}, negativeCallback: () {});
+                          positiveCallback: () {
+                            cartProvider.clearCarts();
+                          }, negativeCallback: () {
+                            if(Navigator.canPop(context)) Navigator.pop(context);
+                          });
                     },
                     icon: Icon(IconlyBroken.delete, color: util.color)),
               )
@@ -33,7 +41,7 @@ class CartScreen extends StatelessWidget {
             backgroundColor:
                 util.isDarkTheme ? Theme.of(context).cardColor : Colors.white,
             title: Text(
-              'Cart (2)',
+              'Cart (${cartItemsList.length})',
               style: TextStyle(
                   color: !util.isDarkTheme ? Colors.black87 : Colors.white),
             )),
@@ -43,11 +51,14 @@ class CartScreen extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  return CartWidget(
-                    quantity: 10,
+                  return ChangeNotifierProvider.value(
+                    value: cartItemsList[index],
+                    child: CartWidget(
+                      quantity: cartItemsList[index].quantity, productId: cartItemsList[index].productId,
+                    ),
                   );
                 },
-                itemCount: 10,
+                itemCount: cartItemsList.length,
               ),
             ),
           ],
