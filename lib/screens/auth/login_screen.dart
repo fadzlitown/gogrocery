@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_grocery/screens/auth/forget_password.dart';
 import 'package:go_grocery/screens/auth/register.dart';
 import 'package:go_grocery/services/global_methods.dart';
@@ -66,8 +67,16 @@ class _LoginScreenState extends State<LoginScreen> {
         await auth.signInWithEmailAndPassword(
             email: _emailTextController.text.toLowerCase().trim(),
             password: _passTextController.text.trim());
-        print('Success register!');
 
+        Fluttertoast.showToast(
+            msg: "Successfully logged in!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
         Navigator.pushReplacementNamed(context, NavBottomBarScreen.routeName);
         //todo - if success, replace the login with HOME Screen so that user can't go back to login state again
 
@@ -77,18 +86,12 @@ class _LoginScreenState extends State<LoginScreen> {
             positiveCallback: () {
             }, negativeCallback: () {
         });
-        setState(() {
-          _isLoading = false;
-        });
       }
       catch (error) {
         GlobalMethods.showOkCancelDialog(
             context, 'Error Occurred', '$error', Icons.error,
             positiveCallback: () {
             }, negativeCallback: () {
-        });
-        setState(() {
-          _isLoading = false;
         });
       } finally {
         setState(() {

@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/provider/dark_theme_provider.dart';
+import 'package:go_grocery/screens/auth/forget_password.dart';
 import 'package:go_grocery/screens/orders/orders_screen.dart';
 import 'package:go_grocery/screens/viewedRecently/viewed_recently_screen.dart';
 import 'package:go_grocery/screens/wishlist/wishlist_screen.dart';
@@ -163,15 +164,19 @@ class _UserScreenState extends State<UserScreen> {
           break;
         }
       case "Wishlist":{
-          if(context!=null) GlobalMethods.navigateTo(context: context, name: WishlistScreen.routeName);
+          GlobalMethods.navigateTo(context: context!, name: WishlistScreen.routeName);
           break;
         }
       case "Orders":{
-        if(context!=null) GlobalMethods.navigateTo(context: context, name: OrdersScreen.routeName);
+        GlobalMethods.navigateTo(context: context!, name: OrdersScreen.routeName);
         break;
       }
       case "Viewed":{
-        if(context!=null) GlobalMethods.navigateTo(context: context, name: ViewedRecentlyScreen.routeName);
+       GlobalMethods.navigateTo(context: context!, name: ViewedRecentlyScreen.routeName);
+        break;
+      }
+      case "Forget":{
+        Navigator.of(context!).push(MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()));
         break;
       }
       case "Theme":{

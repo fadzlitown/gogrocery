@@ -2,6 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_grocery/screens/auth/forget_password.dart';
 import 'package:go_grocery/widgets/back_widget.dart';
 
@@ -65,7 +66,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await auth.createUserWithEmailAndPassword(
             email: _emailTextController.text.toLowerCase().trim(),
             password: _passTextController.text.trim());
-        print('Success register!');
+        print('Successfully registered!');
+        Fluttertoast.showToast(
+            msg: "Successfully registered!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+
         GlobalMethods.navigateTo(context: context, name: LoginScreen.routeName);
       } on FirebaseAuthException catch (error) {
         GlobalMethods.showOkCancelDialog(
@@ -75,9 +86,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             }, negativeCallback: () {
           Navigator.pop(context);
         });
-        setState(() {
-          _isLoading = false;
-        });
       }
       catch (error) {
         GlobalMethods.showOkCancelDialog(
@@ -86,9 +94,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Navigator.pop(context);
         }, negativeCallback: () {
           Navigator.pop(context);
-        });
-        setState(() {
-          _isLoading = false;
         });
       } finally {
         setState(() {
