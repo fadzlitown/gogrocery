@@ -7,6 +7,7 @@ import 'package:go_grocery/screens/home_screen.dart';
 import 'package:go_grocery/screens/user.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/cart_provider.dart';
 import '../provider/dark_theme_provider.dart';
 
 class NavBottomBarScreen extends StatefulWidget {
@@ -30,16 +31,9 @@ class _NavBottomBarScreenState extends State<NavBottomBarScreen> {
     },
     {
       'page': const CartScreen(),
-      'navBtn': BottomNavigationBarItem(
+      'navBtn': const BottomNavigationBarItem(
           label: "Cart",
-          icon: Badge(
-              toAnimate: true,
-              shape: BadgeShape.circle,
-              badgeColor: Colors.blue,
-              borderRadius: BorderRadius.circular(8),
-              badgeContent: const Text('1', style: TextStyle(color: Colors.white)),
-              position: BadgePosition.topEnd(top: -5, end: -5), //todo optional --> the pos can be changed
-              child: const Icon(IconlyLight.buy)))
+          icon: Icon(IconlyLight.buy))
     },
     {
       'page': UserScreen(),
@@ -57,7 +51,7 @@ class _NavBottomBarScreenState extends State<NavBottomBarScreen> {
     });
   }
 
-  // final List<BottomNavigationBarItem> _list = <BottomNavigationBarItem>[
+  // final List<BottomNavigationBarItem> _ <BottomNavigationBarItem>[
   //   const BottomNavigationBarItem(icon: Icon(IconlyLight.home), label: "Home"),
   //   const BottomNavigationBarItem(icon: Icon(IconlyLight.category), label: "Category"),
   //   const BottomNavigationBarItem(icon: Icon(IconlyLight.buy), label: "Cart"),
@@ -68,26 +62,54 @@ class _NavBottomBarScreenState extends State<NavBottomBarScreen> {
   Widget build(BuildContext context) {
     DarkThemeProvider themeState = Provider.of<DarkThemeProvider>(context);
     bool _isDark = themeState.getDarkTheme;
+    //todo l - either using Provider.of<CartProvider>(context); OR Consumer<CartProvider> like below
 
     //todo learn - converting dynamic _pagesConfig into new list!
     List<BottomNavigationBarItem> listBtmNav = _pagesConfig
-        .fold<List<BottomNavigationBarItem>>(
-            [],
-            (previousValue, element) =>
-                List.from(previousValue)..add(element['navBtn']));
+        .fold<List<BottomNavigationBarItem>>([], (previousValue, element) {
+      if (element['navBtn'] is BottomNavigationBarItem) {
+        final item = (element['navBtn'] as BottomNavigationBarItem);
+        if (item.label == 'Cart') {
+          element['navBtn'] = BottomNavigationBarItem(
+              label: "Cart",
+              icon: Consumer<CartProvider>(//todo l - will keep listening & updating on 1 widget with Consumer
+                builder: (context, provider, child) {
+                  return Badge(
+                      toAnimate: true,
+                      shape: BadgeShape.circle,
+                      badgeColor: Colors.blue,
+                      borderRadius: BorderRadius.circular(8),
+                      badgeContent: Text(
+                          provider.getCartItems.length.toString(),
+                          style: const TextStyle(color: Colors.white)),
+                      position: BadgePosition.topEnd(top: -5, end: -5),
+                      //todo optional --> the pos can be changed
+                      child: const Icon(IconlyLight.buy));
+                },
+              ));
+        }
+      }
+      return List.from(previousValue)
+        ..add(element['navBtn']);
+    }
+    );
     bool selectedCartScreen =
         listBtmNav[_selectedIndex].label.toString() == "Cart";
 
     return Scaffold(
       appBar: (!selectedCartScreen)
           ? AppBar(
-              title: Text(listBtmNav[_selectedIndex].label.toString(),
-                  style: TextStyle(
-                      color: !_isDark ? Colors.black87 : Colors.white)),
-              backgroundColor:
-                  _isDark ? Theme.of(context).cardColor : Colors.white)
+          title: Text(listBtmNav[_selectedIndex].label.toString(),
+              style: TextStyle(
+                  color: !_isDark ? Colors.black87 : Colors.white)),
+          backgroundColor:
+          _isDark ? Theme
+              .of(context)
+              .cardColor : Colors.white)
           : null,
-      backgroundColor: _isDark ? Theme.of(context).cardColor : Colors.white,
+      backgroundColor: _isDark ? Theme
+          .of(context)
+          .cardColor : Colors.white,
       body: _pagesConfig[_selectedIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

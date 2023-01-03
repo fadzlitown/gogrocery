@@ -1,22 +1,35 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_grocery/model/wishlist_model.dart';
+import 'package:go_grocery/provider/products_provider.dart';
+import 'package:go_grocery/provider/wishlist_provider.dart';
 import 'package:go_grocery/screens/feed/feed_detail_screen.dart';
 import 'package:go_grocery/services/global_methods.dart';
+import 'package:go_grocery/widgets/heart_wishlist_widget.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/cart_provider.dart';
 import '../../services/Utils.dart';
 import '../../widgets/price_widget.dart';
 
 class WishlistWidget extends StatelessWidget {
-  const WishlistWidget({Key? key}) : super(key: key);
+  String productId;
+
+   WishlistWidget({required this.productId});
 
   @override
   Widget build(BuildContext context) {
     Utils util = Utils(context);
+    final productProvider = Provider.of<ProductProvider>(context);
+    final product = productProvider.getProductById(productId);
+
+    final cartProvider = Provider.of<CartProvider>(context); //registered provider model
+    bool? isCartExisted = cartProvider.getCartItems.containsKey(product.id);
+
     return GestureDetector(
       onTap: () {
-        GlobalMethods.navigateTo(
-            context: context, name: FeedDetailScreen.routeName);
+        Navigator.pushNamed(context, FeedDetailScreen.routeName, arguments: productId);
       },
       child: Container(
         margin: const EdgeInsets.all(10),
@@ -33,19 +46,13 @@ class WishlistWidget extends StatelessWidget {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 const Spacer(),
                 GestureDetector(
-                  child: Icon(IconlyLight.bag, size: 25, color: util.color),
-                  onTap: () {
-                    print('Bag pressed');
+                  child:  Icon(isCartExisted ?  IconlyBold.bag : IconlyLight.bag, size: 22, color: util.color),
+                  onTap: (){
+                    if(!isCartExisted) cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
                   },
                 ),
                 SizedBox(width: util.getMediaSize.width * 0.05),
-                GestureDetector(
-                  child: const Icon(IconlyLight.heart,
-                      size: 25, color: Colors.red),
-                  onTap: () {
-                    print('Heart pressed');
-                  },
-                )
+                HeartWishlistWidget(productId: productId)
               ]),
               Row(
                 children: [
@@ -54,21 +61,23 @@ class WishlistWidget extends StatelessWidget {
                       width: util.getMediaSize.width * 0.2,
                       height: util.getMediaSize.width * 0.2,
                       child: FancyShimmerImage(
-                          imageUrl: 'https://via.placeholder.com/80x80',
+                          imageUrl: product.imageUrl,
                           boxFit: BoxFit.fill)),
                   const Spacer(),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Name..',
+                      Text(product.title,
                           style: TextStyle(
                               color: util.color,
                               fontSize: 16,
-                              fontWeight: FontWeight.normal)),
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(height: util.getMediaSize.height*0.02),
                       PriceWidget(
-                        price: 3.00,
-                        salePrice: 2.00,
+                        price: product.price,
+                        salePrice: product.salePrice,
                         textPrice: '1',
-                        isOnSale: false,
+                        isOnSale: product.isOnSale,
                       ),
                     ],
                   )

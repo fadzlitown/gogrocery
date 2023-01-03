@@ -12,6 +12,7 @@ import '../../model/cart_model.dart';
 import '../../services/Utils.dart';
 import '../../widgets/back_widget.dart';
 import '../../widgets/green_btn_widget.dart';
+import '../../widgets/heart_wishlist_widget.dart';
 import '../../widgets/price_widget.dart';
 import '../../widgets/quantity_increment_decrement.dart';
 
@@ -76,12 +77,8 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(product.title, style: TextStyle(color: util.color, fontSize: 20, fontWeight: FontWeight.bold)),
-              GestureDetector(
-                child: Icon(IconlyLight.heart, size: 22, color: util.color),
-                onTap: (){
-                  print('Heart pressed');
-                },
-              )            ],
+              HeartWishlistWidget(productId: product.id),
+            ],
           ),
         ),
           Padding(

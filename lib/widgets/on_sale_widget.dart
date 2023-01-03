@@ -8,6 +8,7 @@ import '../model/products_model.dart';
 import '../provider/cart_provider.dart';
 import '../screens/feed/feed_detail_screen.dart';
 import '../services/Utils.dart';
+import 'heart_wishlist_widget.dart';
 
 class OnSalesWidget extends StatefulWidget {
   const OnSalesWidget({Key? key}) : super(key: key);
@@ -66,12 +67,8 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
                                 print('Bag pressed');
                               },
                             ),
-                            GestureDetector(
-                              child: Icon(IconlyLight.heart, size: 22, color: color),
-                              onTap: (){
-                                print('Heart pressed');
-                              },
-                            )]),
+                            HeartWishlistWidget(productId: product.id)
+                          ]),
                         ]),
                       ],),
                   ],

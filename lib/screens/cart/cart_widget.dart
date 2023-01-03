@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../provider/cart_provider.dart';
 import '../../services/Utils.dart';
+import '../../widgets/heart_wishlist_widget.dart';
 import '../../widgets/quantity_increment_decrement.dart';
 import '../feed/feed_detail_screen.dart';
 
@@ -160,7 +161,7 @@ class _CartWidgetState extends State<CartWidget> {
                     cartProvider.removeItem(cart.productId);
                   }, child: const Icon(CupertinoIcons.cart_badge_minus, color: Colors.red, size: 20,),),
                   const SizedBox(height: 7), //add some margin
-                  Icon(IconlyLight.heart, color: util.color),
+                  HeartWishlistWidget(productId: product.id),
                   Text('\$${totalPrice.toStringAsFixed(2)}', style: TextStyle(color: util.color ),)
                 ],)),
             const SizedBox(width: 8)

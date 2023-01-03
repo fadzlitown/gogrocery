@@ -9,6 +9,7 @@ import 'package:go_grocery/widgets/price_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/feed/feed_detail_screen.dart';
+import 'heart_wishlist_widget.dart';
 
 class FeedItemWidget extends StatefulWidget {
 
@@ -55,7 +56,7 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold)),
                       ),
-                      Icon(IconlyLight.heart, color: color)
+                       HeartWishlistWidget(productId: product.id)
                     ],
                   ),
                 ),
