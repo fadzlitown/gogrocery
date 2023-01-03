@@ -4,6 +4,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/widgets/price_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../consts/firebase_constants.dart';
 import '../model/products_model.dart';
 import '../provider/cart_provider.dart';
 import '../screens/feed/feed_detail_screen.dart';
@@ -63,7 +64,11 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
                             GestureDetector(
                               child:  Icon(isCartExisted ?  IconlyBold.bag : IconlyLight.bag, size: 22, color: color),
                               onTap: (){
-                                if(!isCartExisted) cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                                if(!isCartExisted){
+                                  if (isCurrentUserLogged(context)){
+                                    cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                                  }
+                                }
                                 print('Bag pressed');
                               },
                             ),

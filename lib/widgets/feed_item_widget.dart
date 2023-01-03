@@ -8,6 +8,7 @@ import 'package:go_grocery/services/Utils.dart';
 import 'package:go_grocery/widgets/price_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../consts/firebase_constants.dart';
 import '../screens/feed/feed_detail_screen.dart';
 import 'heart_wishlist_widget.dart';
 
@@ -138,7 +139,7 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
 
                 TextButton(onPressed: () {
                   if(!isCartExisted) {
-                    cartProvider.addProductIntoCart(productId: product.id, quantity: int.parse(_kgProductItemController.text));
+                    if (isCurrentUserLogged(context))  cartProvider.addProductIntoCart(productId: product.id, quantity: int.parse(_kgProductItemController.text));
                   }
                 }, child: isCartExisted ? const Text('In Cart') : const Text('Add to cart')  )
               ],

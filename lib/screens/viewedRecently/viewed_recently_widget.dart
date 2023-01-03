@@ -6,6 +6,7 @@ import 'package:go_grocery/model/viewed_model.dart';
 import 'package:go_grocery/provider/products_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../consts/firebase_constants.dart';
 import '../../provider/cart_provider.dart';
 import '../../provider/viewed_provider.dart';
 import '../../services/Utils.dart';
@@ -81,7 +82,9 @@ class _ViewedRecentlyWidgetState extends State<ViewedRecentlyWidget> {
                       icon: isCartExisted ?  CupertinoIcons.check_mark : CupertinoIcons.plus,
                       color: Colors.green,
                       func: () {
-                        if(!isCartExisted) cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                        if(!isCartExisted){
+                          if (isCurrentUserLogged(context))  cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                        }
                       })
                 ],
               )

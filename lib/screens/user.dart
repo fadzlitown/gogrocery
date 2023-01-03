@@ -8,7 +8,9 @@ import 'package:go_grocery/screens/wishlist/wishlist_screen.dart';
 import 'package:go_grocery/services/global_methods.dart';
 import 'package:provider/provider.dart';
 
+import '../consts/firebase_constants.dart';
 import '../widgets/ListTileWidget.dart';
+import 'auth/login_screen.dart';
 
 class UserScreen extends StatefulWidget {
   @override
@@ -112,7 +114,9 @@ class _UserScreenState extends State<UserScreen> {
       },
       {
         "item": "Logout",
-        "content": ["Logout", "Subtitle Logout", const Icon(IconlyBold.logout)]
+        "content": [
+          auth.currentUser != null ? "Logout" : "Login", "Subtitle Logout",
+          auth.currentUser != null ? const Icon(IconlyBold.logout) : const Icon(IconlyBold.login)]
       },
     ];
 
@@ -170,17 +174,36 @@ class _UserScreenState extends State<UserScreen> {
         if(context!=null) GlobalMethods.navigateTo(context: context, name: ViewedRecentlyScreen.routeName);
         break;
       }
-      case "Theme":
-        {
+      case "Theme":{
           //todo func
           print('Theme');
           break;
         }
       case "Logout":
         {
-          //todo func
           if (context != null) {
-            await GlobalMethods.showOkCancelDialog(context, 'Sign out', 'Do you wanna sign out?', IconlyLight.logout ,positiveCallback: (){}, negativeCallback:(){});
+            if(auth.currentUser==null){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LoginScreen()));
+              return;
+            }
+            await GlobalMethods.showOkCancelDialog(context, 'Sign out', 'Do you wanna sign out?', IconlyLight.logout ,positiveCallback: (){
+              auth.signOut().then((value){
+                 Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+               });
+              //todo l - if there's an existing screen on backstack? then uses POP or PUSH REPLACEMENT
+              // GlobalMethods.navigateTo(context: context, name: LoginScreen.routeName);
+              // Navigator.pushNamed(context, LoginScreen.routeName);
+            }, negativeCallback:(){});
+          }
+          break;
+        }
+      case "Login":
+      {
+          if (context != null) {
+            if(auth.currentUser==null){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LoginScreen()));
+              return;
+            }
           }
           break;
         }

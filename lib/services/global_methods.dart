@@ -21,8 +21,8 @@ class GlobalMethods {
                   },
                   child: const Text('Cancel')),
               TextButton(onPressed: () {
-                  positiveCallback!();
                   if (Navigator.canPop(context)) Navigator.pop(context);
+                  positiveCallback!();
               }, child: const Text('OK'))
             ],
           );

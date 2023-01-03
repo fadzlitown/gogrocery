@@ -9,6 +9,7 @@ import 'package:go_grocery/provider/products_provider.dart';
 import 'package:go_grocery/provider/viewed_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../consts/firebase_constants.dart';
 import '../../model/cart_model.dart';
 import '../../services/Utils.dart';
 import '../../widgets/back_widget.dart';
@@ -205,7 +206,9 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                     ],
                   ),
                   GreenButtonWidget(isCartExisted? 'In cart' : 'Add to cart', true, (){
-                    if(!isCartExisted) cartProvider.addProductIntoCart(productId: product.id, quantity: int.parse(_quantityController.text));
+                    if(!isCartExisted){
+                      if (isCurrentUserLogged(context)) cartProvider.addProductIntoCart(productId: product.id, quantity: int.parse(_quantityController.text));
+                    }
                   }),
                 ],
               ),

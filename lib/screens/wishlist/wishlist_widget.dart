@@ -9,6 +9,7 @@ import 'package:go_grocery/services/global_methods.dart';
 import 'package:go_grocery/widgets/heart_wishlist_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../consts/firebase_constants.dart';
 import '../../provider/cart_provider.dart';
 import '../../services/Utils.dart';
 import '../../widgets/price_widget.dart';
@@ -48,7 +49,9 @@ class WishlistWidget extends StatelessWidget {
                 GestureDetector(
                   child:  Icon(isCartExisted ?  IconlyBold.bag : IconlyLight.bag, size: 22, color: util.color),
                   onTap: (){
-                    if(!isCartExisted) cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                    if(!isCartExisted){
+                      if (isCurrentUserLogged(context)) cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                    }
                   },
                 ),
                 SizedBox(width: util.getMediaSize.width * 0.05),
