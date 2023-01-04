@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../services/Utils.dart';
 import '../widgets/back_widget.dart';
 import '../widgets/feed_item_widget.dart';
+import 'cart/empty_cart.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -19,6 +20,8 @@ class _FeedScreenState extends State<FeedScreen> {
   final TextEditingController _searchTextController = TextEditingController();
   final FocusNode _searchTextFocusNode = FocusNode();
 
+  List<ProductModel> listProductSearch = [];
+
   @override
   void dispose() {
     super.dispose();
@@ -31,7 +34,7 @@ class _FeedScreenState extends State<FeedScreen> {
     Utils util = Utils(context);
     //Registered Provider list
     ProductProvider productProviders = Provider.of<ProductProvider>(context);
-    List<ProductModel> list =  productProviders.getProducts;
+    List<ProductModel> list = productProviders.getProducts;
     bool isListEmpty = list.isEmpty;
 
     return Scaffold(
@@ -94,26 +97,30 @@ class _FeedScreenState extends State<FeedScreen> {
                               // suffixIcon: const Icon(Icons.close)
                               ),
                           onChanged: (val) {
-                            setState(() {});
+                            setState(() {
+                              listProductSearch =
+                                  productProviders.searchQuery(val);
+                            });
                           }),
                       SizedBox(height: util.getMediaSize.height * 0.04),
-                      GridView.count(
-
-                          ///todo If this widget handling single list, then remove physics & shrinkWrap otherwise used them
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          crossAxisCount: 2,
-                          padding: const EdgeInsets.all(5),
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                          childAspectRatio: util.getMediaSize.width /
-                              (util.getMediaSize.height * 0.59),
-                          //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
-                          children: List.generate(list.length,
-                              (index) {
-                            return ChangeNotifierProvider.value(value: list[index],
-                            child: FeedItemWidget());
-                          })),
+                      _searchTextController.text.isNotEmpty && listProductSearch.isEmpty
+                          ? EmptyScreen('No products found', 'assets/images/history.png', false, '')
+                          : GridView.count(
+                              ///todo If this widget handling single list, then remove physics & shrinkWrap otherwise used them
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              crossAxisCount: 2,
+                              padding: const EdgeInsets.all(5),
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: util.getMediaSize.width /
+                                  (util.getMediaSize.height * 0.59),
+                              //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
+                              children: List.generate(_searchTextController.text.isNotEmpty? listProductSearch.length : list.length, (index) {
+                                return ChangeNotifierProvider.value(
+                                    value: _searchTextController.text.isNotEmpty?  listProductSearch[index] : list[index],
+                                    child: FeedItemWidget());
+                              })),
                     ]),
               ));
   }

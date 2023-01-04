@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_grocery/model/products_model.dart';
 import 'package:go_grocery/provider/products_provider.dart';
+import 'package:go_grocery/screens/cart/empty_cart.dart';
 import 'package:provider/provider.dart';
 
 import '../services/Utils.dart';
@@ -18,6 +19,8 @@ class CategoryScreen extends StatefulWidget {
 class _FeedScreenState extends State<CategoryScreen> {
   final TextEditingController _searchTextController = TextEditingController();
   final FocusNode _searchTextFocusNode = FocusNode();
+
+  List<ProductModel> listProductSearch = [];
 
   @override
   void dispose() {
@@ -95,11 +98,13 @@ class _FeedScreenState extends State<CategoryScreen> {
                       // suffixIcon: const Icon(Icons.close)
                     ),
                     onChanged: (val) {
-                      setState(() {});
+                      setState(() {
+                        listProductSearch = productProviders.searchQuery(val);
+                      });
                     }),
                 SizedBox(height: util.getMediaSize.height * 0.04),
+                _searchTextController.text.isNotEmpty && listProductSearch.isEmpty ? EmptyScreen('No products found', 'assets/images/history.png' , false, '') :
                 GridView.count(
-
                   ///todo If this widget handling single list, then remove physics & shrinkWrap otherwise used them
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -110,9 +115,9 @@ class _FeedScreenState extends State<CategoryScreen> {
                     childAspectRatio: util.getMediaSize.width /
                         (util.getMediaSize.height * 0.59),
                     //todo if any child having out bound pixel, hence, adjusting mediaSize & ratio are required!!
-                    children: List.generate(list.length,
+                    children: List.generate( _searchTextController.text.isNotEmpty ? listProductSearch.length : list.length ,
                             (index) {
-                          return ChangeNotifierProvider.value(value: list[index],
+                          return ChangeNotifierProvider.value(value: _searchTextController.text.isNotEmpty ? listProductSearch[index] : list[index],
                               child: FeedItemWidget());
                         })),
               ]),

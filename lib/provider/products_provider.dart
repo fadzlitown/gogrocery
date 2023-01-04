@@ -23,7 +23,15 @@ class ProductProvider with ChangeNotifier {
         .toList();
   }
 
+  List<ProductModel> searchQuery(String query) {
+    //find query matches with product title
+    List<ProductModel> _searchList = _productsList
+        .where((element) => element.title.toLowerCase().contains(query.toLowerCase())).toList();
+    return _searchList;
+  }
+
   Future<void> fetchProducts() async {
+    _productsList.clear();  //clear first & get the fresh data from API
     await FirebaseFirestore.instance
         .collection('products')
         .get()
@@ -47,7 +55,7 @@ class ProductProvider with ChangeNotifier {
     });
   }
 
-  final List<ProductModel> _productsList = [];
+  List<ProductModel> _productsList = [];
 
 // final List<ProductModel> _productsList = [
 //   ProductModel(
