@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -7,6 +8,7 @@ import 'package:go_grocery/screens/orders/orders_screen.dart';
 import 'package:go_grocery/screens/viewedRecently/viewed_recently_screen.dart';
 import 'package:go_grocery/screens/wishlist/wishlist_screen.dart';
 import 'package:go_grocery/services/global_methods.dart';
+import 'package:go_grocery/widgets/loading_fullscreen_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../consts/firebase_constants.dart';
@@ -19,23 +21,63 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  final TextEditingController _addressTextController = TextEditingController(text: "");
+  final TextEditingController _addressTextController =
+      TextEditingController(text: "");
+  bool _isLoading = false;
+  String? _userEmail, _userName, _userAddress="";
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
+
+  //todo l - before Widget build UI get render, this method need to call the API first in INITSTATE!!
+  Future<void> getUserData() async {
+    setState(() => _isLoading = true);
+
+    if (user == null) {
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    try {
+      final _uid = user?.uid;
+      final DocumentSnapshot userData =
+          await FirebaseFirestore.instance.collection('users').doc(_uid).get();
+
+      if (userData == null) return;
+
+      _userEmail = userData.get('email');
+      _userName = userData.get('name');
+      _userAddress = userData.get('shippingAddress');
+      _addressTextController.text = _userAddress.toString();
+    } catch (error) {
+      GlobalMethods.showOkCancelDialog(
+          context, 'Error Occurred', '$error', Icons.error,
+          positiveCallback: () {}, negativeCallback: () {});
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     // final themeProvider = Provider.of<DarkThemeProvider>(context);
-
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(13),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            //will push to left start
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: _listWidget(context)),
-      ),
-    ));
+    return LoadingFullscreenWidget(
+      isLoading: _isLoading,
+      child: Scaffold(
+          body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(13),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              //will push to left start
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _listWidget(context)),
+        ),
+      )),
+    );
   }
 
   // final List<Map<String, dynamic>> _list2 = [
@@ -50,18 +92,18 @@ class _UserScreenState extends State<UserScreen> {
                 color: Colors.cyan, fontSize: 27, fontWeight: FontWeight.bold),
             children: <TextSpan>[
           TextSpan(
-              text: 'Fadzli',
+              text: '$_userName',
               style: const TextStyle(
                   color: Colors.black,
                   fontSize: 27,
                   fontWeight: FontWeight.normal),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  print('My name');
+                  print('$_userName');
                 }),
         ])));
-    llist.add(const Text('fadzli@gmail.com',
-        style: TextStyle(
+    llist.add(Text('$_userEmail',
+        style: const TextStyle(
             color: Colors.black, fontSize: 17, fontWeight: FontWeight.normal)));
     llist.add(const SizedBox(height: 50));
     llist.add(const Divider());
@@ -89,7 +131,7 @@ class _UserScreenState extends State<UserScreen> {
         "item": "Address",
         "content": [
           "Address",
-          "Subtitle Address",
+          _userAddress.toString(),
           const Icon(IconlyBold.user2)
         ],
       },
@@ -116,8 +158,12 @@ class _UserScreenState extends State<UserScreen> {
       {
         "item": "Logout",
         "content": [
-          auth.currentUser != null ? "Logout" : "Login", "Subtitle Logout",
-          auth.currentUser != null ? const Icon(IconlyBold.logout) : const Icon(IconlyBold.login)]
+          auth.currentUser != null ? "Logout" : "Login",
+          "Subtitle Logout",
+          auth.currentUser != null
+              ? const Icon(IconlyBold.logout)
+              : const Icon(IconlyBold.login)
+        ]
       },
     ];
 
@@ -149,37 +195,46 @@ class _UserScreenState extends State<UserScreen> {
       required Icon icon,
       required BuildContext context}) {
     return ListTileWidget(icon, title, subtitle, () {
-       onFunction(title, context);
+      onFunction(title, context);
     });
   }
 
   void onFunction(String name, BuildContext? context) async {
     switch (name) {
-      case "Address": {
+      case "Address":
+        {
           print('Address');
           if (context != null) {
-           await _showAddressDialog(name);
+            await _showAddressDialog(name, _addressTextController.text);
           }
-
           break;
         }
-      case "Wishlist":{
-          GlobalMethods.navigateTo(context: context!, name: WishlistScreen.routeName);
+      case "Wishlist":
+        {
+          GlobalMethods.navigateTo(
+              context: context!, name: WishlistScreen.routeName);
           break;
         }
-      case "Orders":{
-        GlobalMethods.navigateTo(context: context!, name: OrdersScreen.routeName);
-        break;
-      }
-      case "Viewed":{
-       GlobalMethods.navigateTo(context: context!, name: ViewedRecentlyScreen.routeName);
-        break;
-      }
-      case "Forget":{
-        Navigator.of(context!).push(MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()));
-        break;
-      }
-      case "Theme":{
+      case "Orders":
+        {
+          GlobalMethods.navigateTo(
+              context: context!, name: OrdersScreen.routeName);
+          break;
+        }
+      case "Viewed":
+        {
+          GlobalMethods.navigateTo(
+              context: context!, name: ViewedRecentlyScreen.routeName);
+          break;
+        }
+      case "Forget":
+        {
+          Navigator.of(context!).push(MaterialPageRoute(
+              builder: (context) => const ForgetPasswordScreen()));
+          break;
+        }
+      case "Theme":
+        {
           //todo func
           print('Theme');
           break;
@@ -187,26 +242,32 @@ class _UserScreenState extends State<UserScreen> {
       case "Logout":
         {
           if (context != null) {
-            if(auth.currentUser==null){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LoginScreen()));
+            if (auth.currentUser == null) {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const LoginScreen()));
               return;
             }
-            await GlobalMethods.showOkCancelDialog(context, 'Sign out', 'Do you wanna sign out?', IconlyLight.logout ,positiveCallback: (){
-              auth.signOut().then((value){
-                 Navigator.pushReplacementNamed(context, LoginScreen.routeName);
-               });
+            await GlobalMethods.showOkCancelDialog(
+                context,
+                'Sign out',
+                'Do you wanna sign out?',
+                IconlyLight.logout, positiveCallback: () {
+              auth.signOut().then((value) {
+                Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+              });
               //todo l - if there's an existing screen on backstack? then uses POP or PUSH REPLACEMENT
               // GlobalMethods.navigateTo(context: context, name: LoginScreen.routeName);
               // Navigator.pushNamed(context, LoginScreen.routeName);
-            }, negativeCallback:(){});
+            }, negativeCallback: () {});
           }
           break;
         }
       case "Login":
-      {
+        {
           if (context != null) {
-            if(auth.currentUser==null){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LoginScreen()));
+            if (auth.currentUser == null) {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const LoginScreen()));
               return;
             }
           }
@@ -215,7 +276,7 @@ class _UserScreenState extends State<UserScreen> {
     }
   }
 
-  Future<void> _showAddressDialog(String name) async {
+  Future<void> _showAddressDialog(String name, [String? address]) async {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -228,15 +289,35 @@ class _UserScreenState extends State<UserScreen> {
                 // },
                 controller: _addressTextController,
                 maxLines: 5,
-                decoration: const InputDecoration(
-                    hintText: "Enter your address here")),
+                decoration:
+                    const InputDecoration(hintText: "Enter your address here")),
             actions: [
-              TextButton(onPressed: (){
-              }, child: const Text('Update'))
-            ],);
+              TextButton(
+                  onPressed: () async {
+                    String uid = user!.uid;
+                    try {
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(uid)
+                          .update(
+                              {'shippingAddress': _addressTextController.text});
+
+                      setState(() { //update the address UI too
+                        _userAddress = _addressTextController.text;
+                      });
+                      if (!mounted) return;
+                      Navigator.pop(context);
+                    } catch (error) {
+                      GlobalMethods.showOkCancelDialog(
+                          context, 'Error Occurred', '$error', Icons.error,
+                          positiveCallback: () {}, negativeCallback: () {});
+                    }
+                  },
+                  child: const Text('Update'))
+            ],
+          );
         });
   }
-
 
   // Future<void> _showLogoutDialog(String name) async {
   //   showDialog(

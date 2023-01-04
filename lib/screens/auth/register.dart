@@ -1,4 +1,5 @@
 import 'package:card_swiper/card_swiper.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -67,6 +68,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
             email: _emailTextController.text.toLowerCase().trim(),
             password: _passTextController.text.trim());
         print('Successfully registered!');
+
+        //todo - Storing user's data in collection firestore
+        final uid = auth.currentUser?.uid;
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+            'id': uid,
+            'name': _fullNameTextController.text,
+            'email': _emailTextController.text,
+            'shippingAddress': _addressTextController.text,
+            'userWish': [],
+            'userCart': [],
+            'createdAt': Timestamp.now(),
+          });
         Fluttertoast.showToast(
             msg: "Successfully registered!",
             toastLength: Toast.LENGTH_SHORT,
