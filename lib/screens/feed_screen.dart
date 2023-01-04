@@ -30,10 +30,9 @@ class _FeedScreenState extends State<FeedScreen> {
   Widget build(BuildContext context) {
     Utils util = Utils(context);
     //Registered Provider list
-    final productProviders = Provider.of<ProductProvider>(context);
-    List<ProductModel> list = productProviders.getProducts;
+    ProductProvider productProviders = Provider.of<ProductProvider>(context);
+    List<ProductModel> list =  productProviders.getProducts;
     bool isListEmpty = list.isEmpty;
-
 
     return Scaffold(
         appBar: AppBar(

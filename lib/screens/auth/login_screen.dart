@@ -12,6 +12,7 @@ import '../../consts/firebase_constants.dart';
 import '../../services/Utils.dart';
 import '../../widgets/auth_button_widget.dart';
 import '../../widgets/google_signin_button.dart';
+import '../base_screen.dart';
 import '../nav_btm_bar.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -77,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
             textColor: Colors.white,
             fontSize: 16.0
         );
-        Navigator.pushReplacementNamed(context, NavBottomBarScreen.routeName);
+        if(mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BaseScreen()));
         //todo - if success, replace the login with HOME Screen so that user can't go back to login state again
 
       } on FirebaseAuthException catch (error) {
@@ -250,7 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],),
                           SizedBox(height: util.getMediaSize.height * 0.02),
                           AuthButtonWidget('Continue as a Guest', (){
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=> NavBottomBarScreen()));
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BaseScreen()));
                           }, Colors.black),
                           Row(
                             children: [

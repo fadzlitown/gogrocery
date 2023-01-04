@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../consts/firebase_constants.dart';
+import '../screens/base_screen.dart';
 import '../screens/nav_btm_bar.dart';
 import '../services/global_methods.dart';
 
@@ -30,7 +31,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             //todo l - A widget is mounted if it has state. If the widget is no longer mounted,
             // todo i.e it has been closed or disposed, its state can no longer be updated. Therefore, we check if a widget is mounted to determine its state can still be updated.
             if (!mounted) return;
-            Navigator.pushReplacementNamed(context, NavBottomBarScreen.routeName);
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const BaseScreen()));
             //todo - if success, replace the login with HOME Screen so that user can't go back to login state again
           } on FirebaseAuthException catch (error) {
             if (!mounted) return;
