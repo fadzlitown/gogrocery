@@ -5,6 +5,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:go_grocery/model/products_model.dart';
 import 'package:go_grocery/provider/cart_provider.dart';
 import 'package:go_grocery/services/Utils.dart';
+import 'package:go_grocery/services/global_methods.dart';
 import 'package:go_grocery/widgets/price_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -137,9 +138,12 @@ class _FeedItemWidgetState extends State<FeedItemWidget> {
                 //   ),
                 //   ],),
 
-                TextButton(onPressed: () {
-                  if(!isCartExisted) {
-                    if (isCurrentUserLogged(context))  cartProvider.addProductIntoCart(productId: product.id, quantity: int.parse(_kgProductItemController.text));
+                TextButton(onPressed: ()async {
+                  if(!isCartExisted)  {
+                    if (isCurrentUserLogged(context)){
+                      await GlobalMethods.addProductIntoCart(productId: product.id, quantity: int.parse(_kgProductItemController.text), context: context);
+                      await cartProvider.fetchCart();
+                    }
                   }
                 }, child: isCartExisted ? const Text('In Cart') : const Text('Add to cart')  )
               ],

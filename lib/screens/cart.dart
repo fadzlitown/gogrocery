@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:go_grocery/model/cart_model.dart';
+import 'package:go_grocery/model/products_model.dart';
 import 'package:go_grocery/screens/cart/cart_widget.dart';
 import 'package:go_grocery/screens/cart/empty_cart.dart';
 import 'package:go_grocery/widgets/green_btn_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/cart_provider.dart';
+import '../provider/products_provider.dart';
 import '../services/Utils.dart';
 import '../services/global_methods.dart';
 
@@ -21,6 +24,7 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
+            automaticallyImplyLeading: false, //to avoid the back btn
             actions: [
               Visibility(
                 visible: !isEmpty,
@@ -67,6 +71,30 @@ class CartScreen extends StatelessWidget {
 
   Widget _orderNowWidget(BuildContext context) {
     Utils util = Utils(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+    final provider = Provider.of<ProductProvider>(context);
+
+    double totalPrice=0;
+
+    cartProvider.getCartItems.forEach((key, value) {
+      ProductModel product = provider.getProductById(value.productId);
+        double finalPrice = (product.isOnSale ? product.salePrice : product.price);
+        totalPrice= totalPrice + value.quantity * finalPrice;
+    });
+
+    //todo why this for loop doesnt WORKK!!!
+    // if(cartProvider.getCartItems.isNotEmpty){
+    //   for(int i=0; i<cartProvider.getCartItems.length; i++){
+    //     if(cartProvider.getCartItems[i]==null) break;
+    //
+    //     CartModel cart = cartProvider.getCartItems[i]!;
+    //     ProductModel product = provider.getProductById(cart.productId);
+    //
+    //     double finalPrice = (product.isOnSale ? product.salePrice : product.price);
+    //     totalPrice= totalPrice + cartProvider.getCartItems[i]!.quantity * finalPrice;
+    //   }
+    // }
+
 
     return Container(
         alignment: Alignment.centerLeft,
@@ -79,7 +107,7 @@ class CartScreen extends StatelessWidget {
           children: [
             GreenButtonWidget('Order Now', true, () {}),
             // Spacer(), todo l: remove this spacer then directly used --> MainAxisAlignment.spaceBetween
-            Text('Total: \$0.522',
+            Text('Total: \$${totalPrice.toStringAsFixed(2)}',
                 style: TextStyle(
                     color: util.color,
                     fontSize: 18,

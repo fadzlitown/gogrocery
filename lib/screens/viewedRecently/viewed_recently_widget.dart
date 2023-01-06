@@ -81,9 +81,12 @@ class _ViewedRecentlyWidgetState extends State<ViewedRecentlyWidget> {
                       util: util,
                       icon: isCartExisted ?  CupertinoIcons.check_mark : CupertinoIcons.plus,
                       color: Colors.green,
-                      func: () {
+                      func: () async {
                         if(!isCartExisted){
-                          if (isCurrentUserLogged(context))  cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                          if (isCurrentUserLogged(context)){
+                            await GlobalMethods.addProductIntoCart(productId: product.id, quantity: 1, context: context);
+                            await cartProvider.fetchCart();
+                          }
                         }
                       })
                 ],

@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../../consts/firebase_constants.dart';
 import '../../model/cart_model.dart';
 import '../../services/Utils.dart';
+import '../../services/global_methods.dart';
 import '../../widgets/back_widget.dart';
 import '../../widgets/green_btn_widget.dart';
 import '../../widgets/heart_wishlist_widget.dart';
@@ -205,9 +206,12 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                       ),
                     ],
                   ),
-                  GreenButtonWidget(isCartExisted? 'In cart' : 'Add to cart', true, (){
+                  GreenButtonWidget(isCartExisted? 'In cart' : 'Add to cart', true, () async {
                     if(!isCartExisted){
-                      if (isCurrentUserLogged(context)) cartProvider.addProductIntoCart(productId: product.id, quantity: int.parse(_quantityController.text));
+                      if (isCurrentUserLogged(context)) {
+                        await GlobalMethods.addProductIntoCart(productId: product.id, quantity: int.parse(_quantityController.text), context: context);
+                        await cartProvider.fetchCart();
+                        }
                     }
                   }),
                 ],

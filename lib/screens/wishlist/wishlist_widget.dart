@@ -48,11 +48,17 @@ class WishlistWidget extends StatelessWidget {
                 const Spacer(),
                 GestureDetector(
                   child:  Icon(isCartExisted ?  IconlyBold.bag : IconlyLight.bag, size: 22, color: util.color),
-                  onTap: (){
-                    if(!isCartExisted){
-                      if (isCurrentUserLogged(context)) cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                  onTap: () async {
+                    if (!isCartExisted) {
+                      if (isCurrentUserLogged(context)) {
+                        await GlobalMethods.addProductIntoCart(
+                            productId: product.id,
+                            quantity: 1,
+                            context: context);
+                        await cartProvider.fetchCart();
+                      }
                     }
-                  },
+                  }
                 ),
                 SizedBox(width: util.getMediaSize.width * 0.05),
                 HeartWishlistWidget(productId: productId)

@@ -11,4 +11,5 @@ class Utils{
   Color get color => isDarkTheme ? Colors.white : Colors.black;
 
   Size get getMediaSize => MediaQuery.of(context).size;
+
 }

@@ -251,9 +251,10 @@ class _UserScreenState extends State<UserScreen> {
                 context,
                 'Sign out',
                 'Do you wanna sign out?',
-                IconlyLight.logout, positiveCallback: () {
-              auth.signOut().then((value) {
-                Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+                IconlyLight.logout, positiveCallback: () async {
+              await auth.signOut().then((value) {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const LoginScreen()));
               });
               //todo l - if there's an existing screen on backstack? then uses POP or PUSH REPLACEMENT
               // GlobalMethods.navigateTo(context: context, name: LoginScreen.routeName);

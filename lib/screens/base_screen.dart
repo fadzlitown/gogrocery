@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_grocery/screens/nav_btm_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../consts/firebase_constants.dart';
+import '../provider/cart_provider.dart';
 import '../provider/products_provider.dart';
 import '../widgets/loading_fullscreen_widget.dart';
 
@@ -30,7 +33,16 @@ class _BaseScreenState extends State<BaseScreen> {
     Future.microtask(() async {
       final productProviders = Provider.of<ProductProvider>(context, listen: false);
       await productProviders.fetchProducts(); //fetch first from background call thread
-       setState(() { //to UI thread by navigation them
+
+      User? user = auth.currentUser;
+      final cartProviders = Provider.of<CartProvider>(context, listen: false);
+      if(user!=null) {
+        await cartProviders.fetchCart(); //todo l - fetch the carts for logged in users
+      } else {
+        cartProviders.clearCarts(); //todo l - remove the previous carts for logged in users
+      }
+
+      setState(() { //to UI thread by navigation them
          // Update your UI with the desired changes.
          _isLoading =false;
          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => NavBottomBarScreen()));

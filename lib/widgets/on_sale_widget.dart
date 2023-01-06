@@ -9,6 +9,7 @@ import '../model/products_model.dart';
 import '../provider/cart_provider.dart';
 import '../screens/feed/feed_detail_screen.dart';
 import '../services/Utils.dart';
+import '../services/global_methods.dart';
 import 'heart_wishlist_widget.dart';
 
 class OnSalesWidget extends StatefulWidget {
@@ -63,10 +64,11 @@ class _OnSalesWidgetState extends State<OnSalesWidget> {
                           Row(children: [
                             GestureDetector(
                               child:  Icon(isCartExisted ?  IconlyBold.bag : IconlyLight.bag, size: 22, color: color),
-                              onTap: (){
+                              onTap: () async {
                                 if(!isCartExisted){
                                   if (isCurrentUserLogged(context)){
-                                    cartProvider.addProductIntoCart(productId: product.id, quantity: 1);
+                                    await GlobalMethods.addProductIntoCart(productId: product.id, quantity: 1, context: context);
+                                    await cartProvider.fetchCart();
                                   }
                                 }
                                 print('Bag pressed');
