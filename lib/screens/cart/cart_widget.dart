@@ -28,6 +28,8 @@ class _CartWidgetState extends State<CartWidget> {
   final TextEditingController _quantityController =
       TextEditingController(text: '1');
 
+  bool enabledTap = true;
+
   @override
   void initState() {
     super.initState();
@@ -97,11 +99,20 @@ class _CartWidgetState extends State<CartWidget> {
                           icon: CupertinoIcons.minus,
                           color: Colors.red,
                           func: () {
-                            setState(() {
+                            if(!enabledTap) return;
+
+                            setState(()  {
+                              enabledTap = false;
                               if(_quantityController.text=='1'){
                                 return;
                               } else {
-                                cartProvider.addQuantityPlusOrMinusOne(productId: cart.productId,  isPlusOne: false);
+                                //to avoid multiple taps
+                                Future.delayed(const Duration(milliseconds: 100), () async {
+                                  await cartProvider.addQuantityPlusOrMinusOne(productId: cart.productId,  isPlusOne: false, function:  (){
+                                    enabledTap=true;
+                                  });
+                                });
+
                                 setState(() {
                                   _quantityController.text=(int.parse(_quantityController.text)-1).toString();
                                 });
@@ -137,9 +148,18 @@ class _CartWidgetState extends State<CartWidget> {
                           util: util,
                           icon: CupertinoIcons.plus,
                           color: Colors.green,
-                          func: () {
-                            cartProvider.addQuantityPlusOrMinusOne(productId: cart.productId,  isPlusOne: true);
+                          func: (){
+                            if(!enabledTap) return;
+
+                            //to avoid multiple taps, temp solution as of now
+                            Future.delayed(const Duration(milliseconds: 100), () async {
+                              await cartProvider.addQuantityPlusOrMinusOne(productId: cart.productId,  isPlusOne: true, function:  (){
+                                enabledTap=true;
+                              });
+                            });
+
                             setState(() {
+                              enabledTap=false;
                               if(_quantityController.text=='1'){
                                 _quantityController.text=(int.parse(_quantityController.text)+1).toString();
                                 return;
@@ -157,8 +177,8 @@ class _CartWidgetState extends State<CartWidget> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(children: [
-                  InkWell(onTap: (){
-                    cartProvider.removeItem(cart.productId);
+                  InkWell(onTap: () async {
+                    await cartProvider.removeItem(productId: cart.productId, cartID: cart.id, quantity: cart.quantity);
                   }, child: const Icon(CupertinoIcons.cart_badge_minus, color: Colors.red, size: 20,),),
                   const SizedBox(height: 7), //add some margin
                   HeartWishlistWidget(productId: product.id),

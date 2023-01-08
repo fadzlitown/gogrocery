@@ -32,8 +32,8 @@ class CartScreen extends StatelessWidget {
                     onPressed: () {
                       GlobalMethods.showOkCancelDialog(context, 'Empty Cart',
                           'Are you sure? ', IconlyLight.delete,
-                          positiveCallback: () {
-                            cartProvider.clearCarts();
+                          positiveCallback: () async {
+                            await cartProvider.clearRemoteCarts();
                           }, negativeCallback: () {
                             if(Navigator.canPop(context)) Navigator.pop(context);
                           });

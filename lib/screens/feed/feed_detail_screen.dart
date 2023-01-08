@@ -31,6 +31,8 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
   final TextEditingController _quantityController =
   TextEditingController(text: '1');
 
+  bool enabledTap=true;
+
   @override
   void initState() {
     super.initState();
@@ -128,11 +130,20 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                       icon: CupertinoIcons.minus,
                       color: Colors.red,
                       func: () {
+                        if(!enabledTap) return;
+
                         if(_quantityController.text=='1'){
                           return;
                         } else {
-                          if(isCartExisted) cartProvider.addQuantityPlusOrMinusOne(productId: productId,  isPlusOne: false);
+                          if(isCartExisted){
+                            Future.delayed(const Duration(milliseconds: 100), () async {
+                              await cartProvider.addQuantityPlusOrMinusOne(productId: productId,  isPlusOne: false, function:  (){
+                                enabledTap=true;
+                              });
+                            });
+                          }
                           setState(() {
+                            enabledTap=false;
                             _quantityController.text=(int.parse(_quantityController.text)-1).toString();
                           });
                         }
@@ -167,9 +178,17 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                       util: util,
                       icon: CupertinoIcons.plus,
                       color: Colors.green,
-                      func: () {
-                        if(isCartExisted) cartProvider.addQuantityPlusOrMinusOne(productId: productId,  isPlusOne: true);
+                      func: ()  {
+                        if(!enabledTap) return;
+
+                        Future.delayed(const Duration(milliseconds: 100), () async {
+                          await cartProvider.addQuantityPlusOrMinusOne(productId: productId,  isPlusOne: true, function:  (){
+                            enabledTap=true;
+                          });
+                        });
+
                         setState(() {
+                          enabledTap=false;
                           if(_quantityController.text=='1'){
                             _quantityController.text=(int.parse(_quantityController.text)+1).toString();
                             return;

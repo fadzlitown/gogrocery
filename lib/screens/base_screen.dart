@@ -39,7 +39,7 @@ class _BaseScreenState extends State<BaseScreen> {
       if(user!=null) {
         await cartProviders.fetchCart(); //todo l - fetch the carts for logged in users
       } else {
-        cartProviders.clearCarts(); //todo l - remove the previous carts for logged in users
+        cartProviders.clearLocalCarts(); //todo l - remove the previous carts for logged in users
       }
 
       setState(() { //to UI thread by navigation them

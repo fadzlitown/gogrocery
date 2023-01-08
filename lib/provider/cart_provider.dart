@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_grocery/model/cart_model.dart';
@@ -21,40 +23,87 @@ class CartProvider with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  Future<void> fetchCart() async{
+  Future<void> fetchCart() async {
     final _uid = user?.uid;
-    final DocumentSnapshot userCarts = await FirebaseFirestore.instance.collection('users').doc(_uid).get();
+    final DocumentSnapshot userCarts =
+        await FirebaseFirestore.instance.collection('users').doc(_uid).get();
 
-    if(userCarts==null) return;
+    if (userCarts == null) return;
 
     final total = userCarts.get('userCart').length;
-    for(int i=0; i<total; i++){
-      _cartItems.putIfAbsent(userCarts.get('userCart')[i]['productId'], () =>
-      CartModel(
-          id: userCarts.get('userCart')[i]['cartId'],
-          productId: userCarts.get('userCart')[i]['productId'],
-          quantity: userCarts.get('userCart')[i]['quantity']));
+    for (int i = 0; i < total; i++) {
+      _cartItems.putIfAbsent(
+          userCarts.get('userCart')[i]['productId'],
+          () => CartModel(
+              id: userCarts.get('userCart')[i]['cartId'],
+              productId: userCarts.get('userCart')[i]['productId'],
+              quantity: userCarts.get('userCart')[i]['quantity']));
     }
     notifyListeners();
   }
 
-  void addQuantityPlusOrMinusOne({required String productId, required bool isPlusOne}) {
-    _cartItems.update(productId,
-            (val) => CartModel(
+  Future<void> addQuantityPlusOrMinusOne(
+      {required String productId, required bool isPlusOne, required Function function} )  async {
+
+    final _uid = user?.uid;
+    var oldQuantity = 0;
+    CartModel updateCart = _cartItems.update(
+        productId,
+        (val){
+          oldQuantity = val.quantity;
+          return CartModel(
             id: val.id,
             productId: productId,
-            quantity: isPlusOne ? val.quantity+1 : val.quantity-1));
-    notifyListeners();
+            quantity: isPlusOne ? val.quantity + 1 : val.quantity - 1);
+        });
+
+    //TODO - As of now, remove &  update cart but the process was a bit expensive! need to refactor this!
+    await FirebaseFirestore.instance.collection('users').doc(_uid).update({
+      'userCart': FieldValue.arrayRemove([
+        {'cartId': updateCart.id, 'productId': productId, 'quantity': oldQuantity}
+      ])
+    }).then((value) async {
+      await FirebaseFirestore.instance.collection('users').doc(_uid).update({
+        'userCart': FieldValue.arrayUnion([
+          {'cartId': updateCart.id, 'productId': productId, 'quantity': updateCart.quantity}
+        ])
+      });
+    }).then((value){
+      function();
+      notifyListeners();
+    });
+
+
   }
 
-  void removeItem(String productId){
+  Future<void> removeItem(
+      {required String productId,
+      required String cartID,
+      required int quantity}) async {
+    final _uid = user?.uid;
+    await FirebaseFirestore.instance.collection('users').doc(_uid).update({
+      'userCart': FieldValue.arrayRemove([
+        {'cartId': cartID, 'productId': productId, 'quantity': quantity}
+      ])
+    });
+
     _cartItems.remove(productId);
+    await fetchCart();
     notifyListeners();
   }
 
-  void clearCarts(){
-    _cartItems.clear();
-    notifyListeners();  //immediately clear in current state
+  Future<void> clearRemoteCarts() async {
+    final _uid = user?.uid;
+    await FirebaseFirestore.instance.collection('users').doc(_uid).update({
+      'userCart': []
+      // used [] to keep userCart empty value instead of FieldValue.delete() --> will delete the whole thing
+    });
+    _cartItems.clear(); //update clear list
+    notifyListeners(); //immediately clear UI in current state
   }
 
+  void clearLocalCarts() {
+    _cartItems.clear();
+    notifyListeners(); //immediately clear in current state
+  }
 }
